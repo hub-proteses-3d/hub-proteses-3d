@@ -1,7 +1,7 @@
 
-# Hub de Próteses 3D
+# Hub de Proteses 3D
 
-Projeto Integrador Interdisciplinar do 2º semestre de Ciência da Computação do Instituto Mauá de Tecnologia, em parceria com a AACD.
+Projeto Integrador Interdisciplinar do 2º semestre de Ciencia da Computacao do Instituto Maua de Tecnologia, em parceria com a AACD.
 
 ## Sobre o projeto
 
@@ -43,11 +43,11 @@ npm start
 
 ## Organização
 
-- `server/`: back-end (rotas, modelos e conexão com o banco)
+- `server/`: back-end (rotas e conexão com o banco)
 - `public/`: páginas do site
 - `docs/`: documentação do projeto
 
-Cada funcionalidade é feita em uma branch separada e depois entra na `main` por pull request.
+Cada funcionalidade é feita em uma branch separada e depois entra na `develop` por pull request.
 
 ## Integrantes
 

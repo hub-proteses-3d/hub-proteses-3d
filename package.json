@@ -1,0 +1,12 @@
+{
+  "name": "hub-proteses-3d",
+  "version": "0.1.0",
+  "description": "Plataforma que conecta a demanda de próteses 3D da AACD à capacidade ociosa de impressão",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env server/index.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0"
+  }
+}
