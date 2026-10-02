@@ -1,4 +1,4 @@
-# hub-proteses-3d
+
 # Hub de Próteses 3D
 
 Projeto Integrador Interdisciplinar do 2º semestre de Ciência da Computação do Instituto Mauá de Tecnologia, em parceria com a AACD.
@@ -22,7 +22,7 @@ Os dados dos pacientes não são guardados no sistema, cada pedido usa só um c�
 ## Tecnologias
 
 - HTML, CSS e JavaScript
-- Node.js com Express
+- Node.js 
 - MongoDB
 
 ## Como rodar
