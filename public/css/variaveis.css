@@ -1,4 +1,4 @@
-/* tokens.css - cores, fontes e medidas do Hub AACD.
+/* variaveis.css - cores, fontes e medidas do Hub AACD.
    Use sempre var(--nome) nas telas. Nao escreva cores direto. */
 :root{
   --navy:#14324D;

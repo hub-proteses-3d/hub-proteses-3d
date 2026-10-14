@@ -1,5 +1,5 @@
 /* componentes.css - pecas reutilizaveis (topbar, botao, card, tabela, formulario...).
-   Importe DEPOIS do tokens.css e ANTES do css da tela. */
+   Importe DEPOIS do variaveis.css e ANTES do css da tela. */
 
 /* ---------- Topbar ---------- */
 .topbar{display:flex;align-items:center;justify-content:space-between;background:var(--white);border-bottom:1px solid var(--border);padding:14px 40px;position:sticky;top:0;z-index:10;}
@@ -58,9 +58,6 @@ tr.clickable:hover td{background:#FAFBFC;}
 .field label{font-size:13px;font-weight:600;}
 .field input,.field select,.field textarea{border:1px solid var(--border);background:var(--field-bg);border-radius:var(--radius-sm);padding:11px 14px;font-size:13.5px;font-family:inherit;color:var(--text-dark);}
 .field textarea{resize:vertical;min-height:80px;}
-.upload-box{border:1.5px dashed var(--border);background:var(--field-bg);border-radius:var(--radius-sm);padding:22px;text-align:center;grid-column:1/-1;}
-.upload-box strong{display:block;font-size:13px;margin-bottom:4px;}
-.upload-box span{font-size:12px;color:var(--text-gray);}
 
 /* ---------- Etapas (stepper) ---------- */
 .step-pills{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
@@ -86,11 +83,7 @@ tr.clickable:hover td{background:#FAFBFC;}
 .match-card{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .match-card.top{border-color:var(--navy);border-width:2px;}
 .match-name{font-size:14px;font-weight:600;margin-bottom:3px;}
-.match-dist{font-size:12px;color:var(--text-gray);}
 .match-right{display:flex;align-items:center;gap:18px;}
-.match-score{text-align:right;}
-.match-score b{display:block;font-size:19px;font-weight:700;color:var(--success);}
-.match-score span{font-size:10.5px;color:var(--text-gray);}
 
 /* ---------- Rede / unidades ---------- */
 .units-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
@@ -109,6 +102,5 @@ tr.clickable:hover td{background:#FAFBFC;}
   .form-grid{grid-template-columns:1fr;}
   .two-col{grid-template-columns:1fr;}
   .units-grid{grid-template-columns:1fr 1fr;}
-  .nav{display:none;}
   table{font-size:12px;}
 }
