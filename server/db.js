@@ -4,6 +4,7 @@ let db;
 export async function conectar() {
     await client.connect();
     db = client.db(process.env.DB_NAME);
+    await db.collection("usuarios").createIndex({ email: 1 }, { unique: true });
     console.log("Conectado ao MongoDB");
 }
 
