@@ -50,3 +50,51 @@ export async function buscarParceiroPorId(id) {
             ObjectId(id)
     });
 }
+export async function adicionarImpressora(parceiroId, dados) {
+    if (!ObjectId.isValid(parceiroId)){
+        throw new Error("Parceiro inválido");
+    }
+    if (typeof dados.modelo !== "string" || dados.modelo ==="") {
+        throw new Error("Modelo é obrigatório");
+    }
+    if (typeof dados.tecnologia !== "string" || dados.tecnologia ===""){
+        throw new Error("tecnologia é obrigatória");
+        
+    }
+    if (!Number.isInteger(dados.quantidade) || dados.quantidade < 1) {
+        throw new Error("Quantidade inválida");
+        
+    }
+    const impressora = {
+        _id: new ObjectId(),
+        modelo: dados.modelo,
+        tecnologia: dados.tecnologia,
+        quantidade: dados.quantidade,
+    };
+    const resultado = await
+    getDb().collection("parceiros").updateOne(
+        {_id: new ObjectId(parceiroId)},
+        {$push: {impressoras: impressora}}
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Parceiro não encontrado");
+        
+    }
+    return impressora._id;
+}
+
+export async function removerImpressora(parceiroId, impressoraId) {
+    if (!ObjectId.isValid(parceiroId) || !ObjectId.isValid(impressoraId)){
+        throw new Error("Id inválido");
+        
+    }
+    const resultado = await
+    getDb().collection("parceiros").updateOne(
+        {_id: new ObjectId(parceiroId) },
+        { $pull: {impressoras: {_id: new ObjectId(impressoraId)}}}
+    );
+    if (resultado.modifiedCount === 0){
+        throw new Error("Impressora não encontrada");
+        
+    }
+}
