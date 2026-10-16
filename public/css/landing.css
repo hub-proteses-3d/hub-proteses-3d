@@ -1,4 +1,3 @@
-
 html {
   scroll-behavior: smooth;
 }
@@ -77,4 +76,20 @@ a {
 .hero-imagem img {
   width: 100%;
   display: block;
+}
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0 12%;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+.numero {
+  padding: 32px 24px;
+  color: var(--navy);
+}
+
+.numero + .numero {
+  border-left: 1px solid var(--border);
 }
