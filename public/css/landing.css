@@ -1,5 +1,3 @@
-/* landing.css - estilos so da pagina inicial.
-   Importe DEPOIS do variaveis.css e do componentes.css. */
 
 html {
   scroll-behavior: smooth;
@@ -21,4 +19,62 @@ a {
 
 .nav a:hover {
   color: var(--navy);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 80px 12%;
+  background: linear-gradient(to bottom left, var(--success-bg), var(--white) 60%);
+}
+
+.hero-tag {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--success-bg);
+  color: var(--teal-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  font-size: 52px;
+  line-height: 1.15;
+  color: var(--navy);
+  margin: 20px 0;
+}
+
+.hero h1 span {
+  color: var(--teal-dark);
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-gray);
+  margin: 0 0 32px;
+}
+
+.hero-botoes {
+  display: flex;
+  gap: 14px;
+}
+
+.hero .btn-secondary {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.hero-imagem {
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(20, 50, 77, .10);
+}
+
+.hero-imagem img {
+  width: 100%;
+  display: block;
 }
