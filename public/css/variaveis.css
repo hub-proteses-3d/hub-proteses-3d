@@ -1,0 +1,35 @@
+/* variaveis.css - cores, fontes e medidas do Hub AACD.
+   Use sempre var(--nome) nas telas. Nao escreva cores direto. */
+:root {
+  --navy: #14324D;
+  --navy-dark: #0D2338;
+  --teal: #2EC4B6;
+  --teal-dark: #1B8F84;
+  --bg: #F5F7FA;
+  --white: #FFFFFF;
+  --border: #E2E8F0;
+  --text-dark: #1F2937;
+  --text-gray: #6B7280;
+  --success: #22C55E;
+  --success-bg: #E6F9EE;
+  --warning: #F59E0B;
+  --warning-bg: #FEF3DE;
+  --danger: #EF4444;
+  --danger-bg: #FDE8E8;
+  --field-bg: #F9FAFB;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .04);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-dark);
+}
