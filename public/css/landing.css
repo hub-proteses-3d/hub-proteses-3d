@@ -1,0 +1,24 @@
+/* landing.css - estilos so da pagina inicial.
+   Importe DEPOIS do variaveis.css e do componentes.css. */
+
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.topbar {
+  padding: 14px 12%;
+}
+
+.nav a {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: var(--navy);
+}
