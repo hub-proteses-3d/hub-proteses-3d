@@ -93,3 +93,55 @@ a {
 .numero + .numero {
   border-left: 1px solid var(--border);
 }
+.secao {
+  padding: 80px 12%;
+  background: var(--white);
+  text-align: center;
+}
+
+.secao-tag {
+  color: var(--teal-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.secao h2 {
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--navy);
+  margin: 12px 0;
+}
+
+.secao-texto {
+  max-width: 560px;
+  margin: 0 auto 40px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-gray);
+}
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: left;
+}
+
+.cartoes img {
+  width: 44px;
+  display: block;
+}
+
+.cartoes h3 {
+  font-size: 16px;
+  color: var(--navy);
+  margin: 16px 0 8px;
+}
+
+.cartoes p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-gray);
+  margin: 0;
+}
