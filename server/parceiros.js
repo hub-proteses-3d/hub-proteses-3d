@@ -57,8 +57,8 @@ export async function adicionarImpressora(parceiroId, dados) {
     if (typeof dados.modelo !== "string" || dados.modelo ==="") {
         throw new Error("Modelo é obrigatório");
     }
-    if (typeof dados.tecnologia !== "string" || dados.tecnologia ===""){
-        throw new Error("tecnologia é obrigatória");
+    if (typeof dados.tecnologia !== "string" || dados.tecnologia ==="") {
+        throw new Error("Tecnologia é obrigatória");
         
     }
     if (!Number.isInteger(dados.quantidade) || dados.quantidade < 1) {
@@ -96,5 +96,42 @@ export async function removerImpressora(parceiroId, impressoraId) {
     if (resultado.modifiedCount === 0){
         throw new Error("Impressora não encontrada");
         
+    }
+}
+export async function adicionarFilamento(parceiroId, dados) {
+    if (!ObjectId.isValid(parceiroId)) {
+        throw new Error("Parceiro inválido");
+    }
+    if (typeof dados.material !== "string" || dados.material === "") {
+        throw new Error("Material é obrigatório");
+    }
+
+    const filamento = {
+        _id: new ObjectId(),
+        material: dados.material,
+        biocompativel: dados.biocompativel === true,
+    };
+
+    const resultado = await getDb().collection("parceiros").updateOne(
+        { _id: new ObjectId(parceiroId) },
+        { $push: { filamentos: filamento } }
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Parceiro não encontrado");
+    }
+    return filamento._id;
+}
+
+export async function removerFilamento(parceiroId, filamentoId) {
+    if (!ObjectId.isValid(parceiroId) || !ObjectId.isValid(filamentoId)) {
+        throw new Error("Id inválido");
+    }
+
+    const resultado = await getDb().collection("parceiros").updateOne(
+        { _id: new ObjectId(parceiroId) },
+        { $pull: { filamentos: { _id: new ObjectId(filamentoId) } } }
+    );
+    if (resultado.modifiedCount === 0) {
+        throw new Error("Filamento não encontrado");
     }
 }
