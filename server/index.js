@@ -1,6 +1,11 @@
 import http from "node:http";
 import { conectar } from "./db.js";
 import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
+import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
+import { conferirSenha } from "./senha.js";
+import { criarUsuario, buscarUsuarioPorEmail, alterarSenha } from "./usuarios.js";
+
+const OITO_HORAS = 8 * 60 * 60;
 
 async function rotas(req, res) {
     const url = new URL(req.url, "http://localhost");
@@ -14,6 +19,48 @@ async function rotas(req, res) {
 
     if (metodo === "GET" && caminho === "/api/status") {
         responderJson(res, 200, { mensagem: "Servidor funcionando" });
+        return;
+    }
+    if (metodo === "POST" && caminho === "/api/login") {
+        const dados = await lerCorpo(req);
+        const conta = await buscarUsuarioPorEmail(dados.email);
+        if (conta === null || typeof dados.senha !== "string" || !conferirSenha(dados.senha, conta.senha)) {
+            responderJson(res, 401, { erro: "Email ou senha incorretos" });
+            return;
+        }
+        const token = await criarSessao(conta._id);
+        res.setHeader("Set-Cookie", "sessao=" + token + "; HttpOnly; Path=/; SameSite=Lax; Max-Age=" + OITO_HORAS);
+        responderJson(res, 200, { nome: conta.nome, tipo: conta.tipo, nivel: conta.nivel });
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/logout") {
+        await apagarSessao(req);
+        res.setHeader("Set-Cookie", "sessao=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0");
+        responderJson(res, 200, { mensagem: "Sessão encerrada" });
+        return;
+    }
+
+    const usuario = await buscarUsuarioDaSessao(req);
+    if (usuario === null) {
+        responderJson(res, 401, { erro: "Faça login para continuar" });
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/eu") {
+        responderJson(res, 200, usuario);
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/alterar-senha") {
+        const dados = await lerCorpo(req);
+        const conta = await buscarUsuarioPorEmail(usuario.email);
+        if (typeof dados.senhaAtual !== "string" || !conferirSenha(dados.senhaAtual, conta.senha)) {
+            responderJson(res, 400, { erro: "Senha atual incorreta" });
+            return;
+        }
+        await alterarSenha(usuario._id, dados.novaSenha);
+        responderJson(res, 200, { mensagem: "Senha alterada" });
         return;
     }
 

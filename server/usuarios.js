@@ -46,6 +46,15 @@ export async function buscarUsuarioPorEmail(email) {
     }
     return getDb().collection("usuarios").findOne({ email: email.toLowerCase() });
 }
+export async function alterarSenha(usuarioId, novaSenha) {
+    if (typeof novaSenha !== "string" || novaSenha.length < 6) {
+        throw new Error("A nova senha precisa ter pelo menos 6 caracteres");
+    }
+    await getDb().collection("usuarios").updateOne(
+        { _id: usuarioId },
+        { $set: { senha: gerarHash(novaSenha) } }
+    );
+}
 
 
 
