@@ -1,0 +1,54 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--navy);
+}
+
+.brand {
+  text-decoration: none;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 36px 40px;
+}
+
+.login-card h1 {
+  margin: 24px 0 6px;
+  font-size: 22px;
+}
+
+.login-subtitulo {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text-gray);
+}
+
+.login-card .field {
+  margin-bottom: 18px;
+}
+
+.login-erro {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.login-card .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 14px;
+}
+
+.login-rodape {
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--text-gray);
+}

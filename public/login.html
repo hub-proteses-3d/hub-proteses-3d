@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <main class="card login-card">
+    <a href="index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <h1>Entrar na plataforma</h1>
+    <p class="login-subtitulo">Hub de Manufatura Aditiva para Saúde — Instituto Mauá, AACD e redes regionais</p>
+    <form id="form-login">
+      <div class="field">
+        <label for="email">E-mail institucional</label>
+        <input type="email" id="email" placeholder="nome@instituicao.org.br" required>
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" required>
+      </div>
+      <p id="erro" class="login-erro" hidden></p>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <p class="login-rodape">As contas são criadas pela administração. Esqueceu a senha? Peça uma nova ao administrador.</p>
+  </main>
+  <script src="js/login.js"></script>
+</body>
+</html>
