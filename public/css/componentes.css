@@ -19,6 +19,7 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .brand-dot {
@@ -276,6 +277,16 @@ tr.clickable:hover td {
   color: var(--danger);
 }
 
+.pill-info {
+  background: var(--border);
+  color: var(--navy);
+}
+
+.pill-neutral {
+  background: var(--border);
+  color: var(--text-gray);
+}
+
 /* ---------- Formularios ---------- */
 .form-grid {
   display: grid;
@@ -522,4 +533,32 @@ tr.clickable:hover td {
   table {
     font-size: 12px;
   }
+}
+
+.nav a {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-gray);
+  text-decoration: none;
+}
+
+.nav a.active {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.texto-navy {
+  color: var(--navy);
+}
+
+.texto-teal {
+  color: var(--teal);
+}
+
+.texto-warning {
+  color: var(--warning);
+}
+
+.texto-success {
+  color: var(--success);
 }
