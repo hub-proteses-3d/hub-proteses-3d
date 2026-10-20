@@ -1,5 +1,6 @@
 import { getDb } from './db.js';
 import { gerarHash } from './senha.js';
+import { buscarParceiroPorId } from "./parceiros.js";
 
 const TIPOS = ["admin", "aacd", "parceiro"];
 const NIVEIS = [1, 2, 3];
@@ -29,6 +30,13 @@ export async function criarUsuario(dados) {
         nivel: dados.nivel,
         criadoEm: new Date(),
     };
+    if (dados.tipo === "parceiro") {
+        const parceiro = await buscarParceiroPorId(dados.parceiroId);
+        if (parceiro === null) {
+            throw new Error("Parceiro não encontrado");
+        }
+        usuario.parceiroId = parceiro._id;
+    }
     try {
         const resultado = await getDb().collection("usuarios").insertOne(usuario);
         return resultado.insertedId;

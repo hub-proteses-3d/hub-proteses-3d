@@ -4,8 +4,23 @@ import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
 import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
 import { conferirSenha } from "./senha.js";
 import { criarUsuario, buscarUsuarioPorEmail, alterarSenha } from "./usuarios.js";
+import {
+    criarParceiro, listarParceiros, buscarParceiroPorId,
+    adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
+} from "./parceiros.js";
 
 const OITO_HORAS = 8 * 60 * 60;
+
+function semPermissao(res) {
+    responderJson(res, 403, { erro: "Você não tem permissão para isso" });
+}
+
+function podeEditarParceiro(usuario, parceiroId) {
+    if (usuario.tipo === "admin") {
+        return true;
+    }
+    return usuario.tipo === "parceiro" && usuario.nivel >= 2 && String(usuario.parceiroId) === parceiroId;
+}
 
 async function rotas(req, res) {
     const url = new URL(req.url, "http://localhost");
@@ -63,6 +78,74 @@ async function rotas(req, res) {
         responderJson(res, 200, { mensagem: "Senha alterada" });
         return;
     }
+    if (metodo === "POST" && caminho === "/api/usuarios") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        const id = await criarUsuario(dados);
+        responderJson(res, 201, { id: id });
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/parceiros") {
+        responderJson(res, 200, await listarParceiros());
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/parceiros") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        const id = await criarParceiro(dados);
+        responderJson(res, 201, { id: id });
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/parceiro") {
+        const parceiro = await buscarParceiroPorId(url.searchParams.get("id"));
+        if (parceiro === null) {
+            responderJson(res, 404, { erro: "Parceiro não encontrado" });
+            return;
+        }
+        responderJson(res, 200, parceiro);
+        return;
+    }
+
+    if (caminho === "/api/impressoras" || caminho === "/api/filamentos") {
+        const parceiroId = url.searchParams.get("parceiroId");
+        if (!podeEditarParceiro(usuario, parceiroId)) {
+            semPermissao(res);
+            return;
+        }
+
+        if (metodo === "POST" && caminho === "/api/impressoras") {
+            const dados = await lerCorpo(req);
+            const id = await adicionarImpressora(parceiroId, dados);
+            responderJson(res, 201, { id: id });
+            return;
+        }
+        if (metodo === "DELETE" && caminho === "/api/impressoras") {
+            await removerImpressora(parceiroId, url.searchParams.get("impressoraId"));
+            responderJson(res, 200, { mensagem: "Impressora removida" });
+            return;
+        }
+        if (metodo === "POST" && caminho === "/api/filamentos") {
+            const dados = await lerCorpo(req);
+            const id = await adicionarFilamento(parceiroId, dados);
+            responderJson(res, 201, { id: id });
+            return;
+        }
+        if (metodo === "DELETE" && caminho === "/api/filamentos") {
+            await removerFilamento(parceiroId, url.searchParams.get("filamentoId"));
+            responderJson(res, 200, { mensagem: "Filamento removido" });
+            return;
+        }
+    }
+
 
     responderJson(res, 404, { erro: "Rota não encontrada" });
 }
