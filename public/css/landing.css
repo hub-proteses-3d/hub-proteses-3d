@@ -14,6 +14,7 @@ a {
 .nav a {
   font-size: 14px;
   font-weight: 500;
+  color: var(--text-dark);
 }
 
 .nav a:hover {
