@@ -133,6 +133,7 @@
   border: none;
   font-family: inherit;
   padding: 0;
+  text-decoration: none;
 }
 
 .back-link:hover {

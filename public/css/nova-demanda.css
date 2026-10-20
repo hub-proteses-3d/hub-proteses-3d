@@ -1,0 +1,25 @@
+.conteudo-estreito {
+  max-width: 980px;
+}
+
+.conteudo-estreito form {
+  margin-top: 24px;
+}
+
+.ajuda {
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.mensagem {
+  margin: 20px 0 0;
+  font-size: 13px;
+  color: var(--teal-dark);
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}

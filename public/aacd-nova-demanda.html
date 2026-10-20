@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Demanda - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/nova-demanda.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="aacd-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="aacd-dashboard.html">Dashboard</a>
+      <a href="aacd-nova-demanda.html" class="active">Nova Demanda</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name">AACD · Eng. Clínica</span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content conteudo-estreito">
+    <a href="aacd-dashboard.html" class="back-link">← Voltar ao painel</a>
+    <h1 class="page-title">Nova Demanda</h1>
+    <p class="page-subtitle">Registre uma nova solicitação de prótese</p>
+
+    <form id="form-demanda" class="card card-pad">
+      <div class="form-grid">
+        <div class="field">
+          <label for="codigoCaso">Código do caso</label>
+          <input type="text" id="codigoCaso" placeholder="Ex: A-2340" required>
+          <span class="ajuda">Use só o código. Não digite o nome do paciente.</span>
+        </div>
+        <div class="field">
+          <label for="tipoProtese">Tipo de Prótese</label>
+          <input type="text" id="tipoProtese" placeholder="Ex: Mão parcial (transradial)" required>
+        </div>
+        <div class="field">
+          <label for="urgencia">Urgência Clínica</label>
+          <select id="urgencia">
+            <option value="baixa">Baixa</option>
+            <option value="media" selected>Média</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="material">Filamento Necessário</label>
+          <select id="material">
+            <option value="PLA">PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="PLA Biocompatível" selected>PLA Biocompatível</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="infillMinimo">Infill Mínimo Exigido</label>
+          <input type="number" id="infillMinimo" min="0" max="100" placeholder="Ex: 35%">
+        </div>
+        <div class="field">
+          <label for="responsavelClinico">Responsável Clínico</label>
+          <input type="text" id="responsavelClinico" placeholder="Ex: Dra. Fernanda Lima">
+        </div>
+        <div class="field">
+          <label for="cidade">Cidade</label>
+          <input type="text" id="cidade" placeholder="Ex: São Caetano do Sul" required>
+          <span class="ajuda">Obrigatório. Usada para comparar com a cidade dos parceiros.</span>
+        </div>
+        <div class="field full">
+          <label for="observacoes">Observações clínicas</label>
+          <textarea id="observacoes" placeholder="Não informe nome ou dados pessoais do paciente"></textarea>
+        </div>
+        <div class="field full">
+          <label for="arquivoUrl">Link do arquivo de fatiamento</label>
+          <input type="url" id="arquivoUrl" placeholder="https://servidor.exemplo.br/arquivos/protese.gcode">
+          <span class="ajuda">Cole o link do arquivo .gcode que já está no servidor.</span>
+        </div>
+      </div>
+      <p id="mensagem" class="mensagem" hidden></p>
+      <div class="acoes">
+        <a href="aacd-dashboard.html" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Enviar Demanda</button>
+      </div>
+    </form>
+  </main>
+  <script src="js/nova-demanda.js"></script>
+</body>
+</html>
