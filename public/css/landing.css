@@ -145,3 +145,23 @@ a {
   color: var(--text-gray);
   margin: 0;
 }
+.secao-cinza {
+  background: var(--bg);
+}
+
+.cartoes-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.passo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+}
