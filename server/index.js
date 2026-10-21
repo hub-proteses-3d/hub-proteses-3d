@@ -8,6 +8,7 @@ import {
     criarParceiro, listarParceiros, buscarParceiroPorId,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
 } from "./parceiros.js";
+import { criarPedido, listarPedidos, buscarPedidoPorNumero } from "./pedidos.js";
 
 const OITO_HORAS = 8 * 60 * 60;
 
@@ -144,6 +145,31 @@ async function rotas(req, res) {
             responderJson(res, 200, { mensagem: "Filamento removido" });
             return;
         }
+    }
+    if (metodo === "POST" && caminho === "/api/pedidos") {
+        if (usuario.tipo !== "aacd" || usuario.nivel < 2) {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        const numero = await criarPedido(dados, usuario._id);
+        responderJson(res, 201, { numero: numero });
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/pedidos") {
+        responderJson(res, 200, await listarPedidos(usuario));
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/pedido") {
+        const pedido = await buscarPedidoPorNumero(url.searchParams.get("numero"));
+        if (pedido === null || (usuario.tipo === "parceiro" && String(pedido.parceiroId) !== String(usuario.parceiroId))) {
+            responderJson(res, 404, { erro: "Pedido não encontrado" });
+            return;
+        }
+        responderJson(res, 200, pedido);
+        return;
     }
 
 
