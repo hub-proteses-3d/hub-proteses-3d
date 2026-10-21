@@ -8,7 +8,8 @@ import {
     criarParceiro, listarParceiros, buscarParceiroPorId,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
 } from "./parceiros.js";
-import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus } from "./pedidos.js";
+import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus, sugerirParceiros } from "./pedidos.js";
+
 
 const OITO_HORAS = 8 * 60 * 60;
 
@@ -177,7 +178,14 @@ async function rotas(req, res) {
         responderJson(res, 200, { mensagem: "Status alterado" });
         return;
     }
-
+    if (metodo === "GET" && caminho === "/api/pedido/sugestoes") {
+        if (usuario.tipo === "parceiro") {
+            semPermissao(res);
+            return;
+        }
+        responderJson(res, 200, await sugerirParceiros(url.searchParams.get("numero")));
+        return;
+    }
 
     responderJson(res, 404, { erro: "Rota não encontrada" });
 }

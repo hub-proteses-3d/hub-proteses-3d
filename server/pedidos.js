@@ -2,6 +2,7 @@ import {getDb} from "./db.js";
 import { CIDADES, MATERIAIS } from "./listas.js";
 import { buscarParceiroPorId } from "./parceiros.js";
 
+
 const URGENCIAS = ["baixa", "media", "alta"];
 
 function textoValido(valor) {
@@ -155,4 +156,18 @@ export async function mudarStatus(numero, novoStatus, usuario, dados) {
     if (resultado.modifiedCount === 0) {
         throw new Error("O pedido foi alterado por outra pessoa. Atualize a página.");
     }
+}
+export async function sugerirParceiros(numero) {
+    const pedido = await buscarPedidoPorNumero(numero);
+    if (pedido === null) {
+        throw new Error("Pedido não encontrado");
+    }
+    const parceiros = await getDb().collection("parceiros").find(
+        { homologado: true, "filamentos.material": pedido.material },
+        { projection: { nome: 1, cidade: 1, capacidadeMensal: 1 } }
+    ).sort({ nome: 1 }).toArray();
+
+    const mesmaCidade = parceiros.filter((p) => p.cidade === pedido.cidade);
+    const outrasCidades = parceiros.filter((p) => p.cidade !== pedido.cidade);
+    return mesmaCidade.concat(outrasCidades);
 }
