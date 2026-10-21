@@ -8,7 +8,7 @@ import {
     criarParceiro, listarParceiros, buscarParceiroPorId,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
 } from "./parceiros.js";
-import { criarPedido, listarPedidos, buscarPedidoPorNumero } from "./pedidos.js";
+import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus } from "./pedidos.js";
 
 const OITO_HORAS = 8 * 60 * 60;
 
@@ -169,6 +169,12 @@ async function rotas(req, res) {
             return;
         }
         responderJson(res, 200, pedido);
+        return;
+    }
+    if (metodo === "POST" && caminho === "/api/pedido/status") {
+        const dados = await lerCorpo(req);
+        await mudarStatus(url.searchParams.get("numero"), dados.status, usuario, dados);
+        responderJson(res, 200, { mensagem: "Status alterado" });
         return;
     }
 
