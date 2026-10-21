@@ -1,5 +1,6 @@
 import {getDb} from "./db.js";
 import { CIDADES, MATERIAIS } from "./listas.js";
+import { buscarParceiroPorId } from "./parceiros.js";
 
 const URGENCIAS = ["baixa", "media", "alta"];
 
@@ -95,4 +96,63 @@ export async function buscarPedidoPorNumero(numero) {
         pedido.parceiroNome = parceiro ? parceiro.nome : null;
     }
     return pedido;
+}
+const TRANSICOES = [
+    { de: "Aberto", para: "Atribuído", quem: "aacd" },
+    { de: "Atribuído", para: "Em impressão", quem: "parceiro" },
+    { de: "Atribuído", para: "Aberto", quem: "parceiro" },
+    { de: "Em impressão", para: "Enviado", quem: "parceiro" },
+    { de: "Enviado", para: "Em validação", quem: "aacd" },
+    { de: "Em validação", para: "Aprovado", quem: "aacd" },
+    { de: "Em validação", para: "Reprovado", quem: "aacd" },
+    { de: "Aprovado", para: "Entregue", quem: "aacd" },
+];
+
+export async function mudarStatus(numero, novoStatus, usuario, dados) {
+    const pedido = await buscarPedidoPorNumero(numero);
+    if (pedido === null) {
+        throw new Error("Pedido não encontrado");
+    }
+    if (usuario.tipo === "parceiro" && String(pedido.parceiroId) !== String(usuario.parceiroId)) {
+        throw new Error("Pedido não encontrado");
+    }
+
+    const transicao = TRANSICOES.find((t) => t.de === pedido.status && t.para === novoStatus);
+    if (!transicao) {
+        throw new Error("Não é possível mudar de " + pedido.status + " para " + novoStatus);
+    }
+    if (usuario.tipo !== transicao.quem || usuario.nivel < 2) {
+        throw new Error("Você não tem permissão para esta mudança");
+    }
+
+    const mudanca = { status: novoStatus };
+    if (novoStatus === "Atribuído") {
+        const parceiro = await buscarParceiroPorId(dados.parceiroId);
+        if (parceiro === null || !parceiro.homologado) {
+            throw new Error("Parceiro inválido ou não homologado");
+        }
+        mudanca.parceiroId = parceiro._id;
+    }
+    if (novoStatus === "Reprovado") {
+        if (!textoValido(dados.motivo)) {
+            throw new Error("O motivo da reprovação é obrigatório");
+        }
+        mudanca.motivoReprovacao = dados.motivo.trim();
+    }
+
+    const atualizacao = {
+        $set: mudanca,
+        $push: { historico: { status: novoStatus, data: new Date(), usuarioId: usuario._id } },
+    };
+    if (novoStatus === "Aberto") {
+        atualizacao.$unset = { parceiroId: "" };
+    }
+
+    const resultado = await getDb().collection("pedidos").updateOne(
+        { numero: pedido.numero, status: pedido.status },
+        atualizacao
+    );
+    if (resultado.modifiedCount === 0) {
+        throw new Error("O pedido foi alterado por outra pessoa. Atualize a página.");
+    }
 }
