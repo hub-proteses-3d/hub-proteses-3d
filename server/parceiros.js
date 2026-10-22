@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "./db.js";
+import { CIDADES, MATERIAIS } from "./listas.js";
 
 const TIPOS_UNIDADE = ["fablab", "voluntario", "empresa"];
 
@@ -10,8 +11,8 @@ export async function criarParceiro(dados) {
     if (!TIPOS_UNIDADE.includes(dados.tipoUnidade)) {
         throw new Error("Tipo de unidade inválido");
     }
-    if (typeof dados.cidade !== "string" || dados.cidade === "") {
-        throw new Error("Cidade é obrigatória");
+    if (!CIDADES.includes(dados.cidade)) {
+        throw new Error("Cidade inválida");
     }
     if (!Number.isInteger(dados.capacidadeMensal) || dados.capacidadeMensal < 0) {
         throw new Error("Capacidade mensal inválida");
@@ -102,8 +103,8 @@ export async function adicionarFilamento(parceiroId, dados) {
     if (!ObjectId.isValid(parceiroId)) {
         throw new Error("Parceiro inválido");
     }
-    if (typeof dados.material !== "string" || dados.material === "") {
-        throw new Error("Material é obrigatório");
+    if (!MATERIAIS.includes(dados.material)) {
+        throw new Error("Material inválido");
     }
 
     const filamento = {
