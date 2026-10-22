@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Pedidos - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="aacd-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="aacd-dashboard.html" class="active">Dashboard</a>
+      <a href="aacd-nova-demanda.html">Nova Demanda</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name">AACD · Eng. Clínica</span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Painel de Pedidos</h1>
+        <p class="page-subtitle">Acompanhe as solicitações de próteses e o status de produção</p>
+      </div>
+      <a href="aacd-nova-demanda.html" class="btn btn-primary">+ Novo Pedido</a>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div id="total-ativos" class="kpi-value texto-navy">0</div>
+        <div class="kpi-label">Pedidos Ativos</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-impressao" class="kpi-value texto-teal">0</div>
+        <div class="kpi-label">Em impressão</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-abertos" class="kpi-value texto-warning">0</div>
+        <div class="kpi-label">Abertos</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-entregues" class="kpi-value texto-success">0</div>
+        <div class="kpi-label">Entregues no Mês</div>
+      </div>
+    </div>
+
+    <div class="card card-tabela">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Pedido</th>
+            <th>Tipo de Prótese</th>
+            <th>Urgência</th>
+            <th>Status</th>
+            <th>Parceiro responsável</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="lista-pedidos">
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script src="js/aacd-dashboard.js"></script>
+</body>
+</html>

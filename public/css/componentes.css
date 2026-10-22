@@ -19,6 +19,7 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .brand-dot {
@@ -132,6 +133,7 @@
   border: none;
   font-family: inherit;
   padding: 0;
+  text-decoration: none;
 }
 
 .back-link:hover {
@@ -150,6 +152,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -180,6 +183,7 @@
   font-family: inherit;
   font-size: 13.5px;
   padding: 0;
+  text-decoration: none;
 }
 
 /* ---------- Cards / KPIs ---------- */
@@ -192,6 +196,10 @@
 
 .card-pad {
   padding: 24px;
+}
+
+.card-tabela {
+  overflow: hidden;
 }
 
 .kpi-row {
@@ -274,6 +282,16 @@ tr.clickable:hover td {
 .pill-danger {
   background: var(--danger-bg);
   color: var(--danger);
+}
+
+.pill-info {
+  background: var(--border);
+  color: var(--navy);
+}
+
+.pill-neutral {
+  background: var(--border);
+  color: var(--text-gray);
 }
 
 /* ---------- Formularios ---------- */
@@ -522,4 +540,32 @@ tr.clickable:hover td {
   table {
     font-size: 12px;
   }
+}
+
+.nav a {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-gray);
+  text-decoration: none;
+}
+
+.nav a.active {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.texto-navy {
+  color: var(--navy);
+}
+
+.texto-teal {
+  color: var(--teal);
+}
+
+.texto-warning {
+  color: var(--warning);
+}
+
+.texto-success {
+  color: var(--success);
 }
