@@ -1,11 +1,4 @@
-const pedidos = [
-  { numero: 1042, tipoProtese: "Mão parcial (transradial)", urgencia: "alta", status: "Em impressão", parceiro: "FabLab USCS – São Caetano" },
-  { numero: 1041, tipoProtese: "Prótese de mão infantil", urgencia: "media", status: "Aberto", parceiro: "" },
-  { numero: 1039, tipoProtese: "Órtese de punho", urgencia: "baixa", status: "Atribuído", parceiro: "FabLab Mauá" },
-  { numero: 1037, tipoProtese: "Prótese transtibial", urgencia: "alta", status: "Em validação", parceiro: "Voluntário técnico – Diadema" },
-  { numero: 1035, tipoProtese: "Mão parcial (transradial)", urgencia: "media", status: "Entregue", parceiro: "FabLab UFABC – Santo André" },
-  { numero: 1033, tipoProtese: "Órtese de punho", urgencia: "baixa", status: "Reprovado", parceiro: "FabLab São Bernardo" },
-];
+const lista = document.getElementById("lista-pedidos");
 
 const URGENCIAS = {
   baixa: { texto: "Baixa", classe: "pill-success" },
@@ -24,40 +17,111 @@ const CORES_STATUS = {
   "Entregue": "pill-success",
 };
 
-const lista = document.getElementById("lista-pedidos");
-let ativos = 0;
-let impressao = 0;
-let abertos = 0;
-let entregues = 0;
+function criarCelula(texto) {
+  const celula = document.createElement("td");
+  celula.textContent = texto;
+  return celula;
+}
 
-for (const pedido of pedidos) {
-  const urgencia = URGENCIAS[pedido.urgencia];
+function criarEtiqueta(texto, classe) {
+  const celula = document.createElement("td");
+  const etiqueta = document.createElement("span");
+  etiqueta.className = "pill " + classe;
+  etiqueta.textContent = texto;
+  celula.appendChild(etiqueta);
+  return celula;
+}
+
+function mostrarMensagem(texto) {
   const linha = document.createElement("tr");
-  linha.innerHTML = `
-    <td><strong>#${pedido.numero}</strong></td>
-    <td>${pedido.tipoProtese}</td>
-    <td><span class="pill ${urgencia.classe}">${urgencia.texto}</span></td>
-    <td><span class="pill ${CORES_STATUS[pedido.status]}">${pedido.status}</span></td>
-    <td>${pedido.parceiro || "—"}</td>
-    <td><a href="aacd-acompanhamento.html?numero=${pedido.numero}" class="btn-link">Ver detalhes →</a></td>
-  `;
+  const celula = criarCelula(texto);
+  celula.colSpan = 6;
+  linha.appendChild(celula);
   lista.appendChild(linha);
+}
 
-  if (pedido.status !== "Entregue" && pedido.status !== "Reprovado") {
-    ativos++;
+function entregueEsteMes(pedido) {
+  const hoje = new Date();
+  for (const mudanca of pedido.historico) {
+    if (mudanca.status === "Entregue") {
+      const data = new Date(mudanca.data);
+      return data.getMonth() === hoje.getMonth() && data.getFullYear() === hoje.getFullYear();
+    }
   }
-  if (pedido.status === "Em impressão") {
-    impressao++;
+  return false;
+}
+
+function mostrarPedidos(pedidos) {
+  let ativos = 0;
+  let impressao = 0;
+  let abertos = 0;
+  let entregues = 0;
+
+  for (const pedido of pedidos) {
+    const urgencia = URGENCIAS[pedido.urgencia];
+    const linha = document.createElement("tr");
+
+    const celulaNumero = document.createElement("td");
+    const numero = document.createElement("strong");
+    numero.textContent = "#" + pedido.numero;
+    celulaNumero.appendChild(numero);
+    linha.appendChild(celulaNumero);
+
+    linha.appendChild(criarCelula(pedido.tipoProtese));
+    linha.appendChild(criarEtiqueta(urgencia.texto, urgencia.classe));
+    linha.appendChild(criarEtiqueta(pedido.status, CORES_STATUS[pedido.status]));
+    linha.appendChild(criarCelula(pedido.parceiroNome || "—"));
+
+    const celulaLink = document.createElement("td");
+    const link = document.createElement("a");
+    link.href = "aacd-acompanhamento.html?numero=" + pedido.numero;
+    link.className = "btn-link";
+    link.textContent = "Ver detalhes →";
+    celulaLink.appendChild(link);
+    linha.appendChild(celulaLink);
+
+    lista.appendChild(linha);
+
+    if (pedido.status !== "Entregue" && pedido.status !== "Reprovado") {
+      ativos++;
+    }
+    if (pedido.status === "Em impressão") {
+      impressao++;
+    }
+    if (pedido.status === "Aberto") {
+      abertos++;
+    }
+    if (pedido.status === "Entregue" && entregueEsteMes(pedido)) {
+      entregues++;
+    }
   }
-  if (pedido.status === "Aberto") {
-    abertos++;
-  }
-  if (pedido.status === "Entregue") {
-    entregues++;
+
+  document.getElementById("total-ativos").textContent = ativos;
+  document.getElementById("total-impressao").textContent = impressao;
+  document.getElementById("total-abertos").textContent = abertos;
+  document.getElementById("total-entregues").textContent = entregues;
+
+  if (pedidos.length === 0) {
+    mostrarMensagem("Nenhum pedido cadastrado ainda.");
   }
 }
 
-document.getElementById("total-ativos").textContent = ativos;
-document.getElementById("total-impressao").textContent = impressao;
-document.getElementById("total-abertos").textContent = abertos;
-document.getElementById("total-entregues").textContent = entregues;
+async function carregarPedidos() {
+  try {
+    const resposta = await fetch("/api/pedidos");
+    if (resposta.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    const dados = await resposta.json();
+    if (!resposta.ok) {
+      mostrarMensagem(dados.erro);
+      return;
+    }
+    mostrarPedidos(dados);
+  } catch {
+    mostrarMensagem("Não foi possível carregar os pedidos.");
+  }
+}
+
+carregarPedidos();
