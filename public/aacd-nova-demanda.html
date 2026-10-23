@@ -61,7 +61,7 @@
         </div>
         <div class="field">
           <label for="infillMinimo">Infill Mínimo Exigido</label>
-          <input type="number" id="infillMinimo" min="0" max="100" placeholder="Ex: 35%">
+          <input type="number" id="infillMinimo" min="0" max="100" placeholder="Ex: 35%" required>
         </div>
         <div class="field">
           <label for="responsavelClinico">Responsável Clínico</label>
@@ -69,7 +69,17 @@
         </div>
         <div class="field">
           <label for="cidade">Cidade</label>
-          <input type="text" id="cidade" placeholder="Ex: São Caetano do Sul" required>
+          <select id="cidade" required>
+            <option value="">Escolha a cidade</option>
+            <option>Santo André</option>
+            <option>São Bernardo do Campo</option>
+            <option>São Caetano do Sul</option>
+            <option>Diadema</option>
+            <option>Mauá</option>
+            <option>Ribeirão Pires</option>
+            <option>Rio Grande da Serra</option>
+            <option>São Paulo</option>
+          </select>
           <span class="ajuda">Obrigatório. Usada para comparar com a cidade dos parceiros.</span>
         </div>
         <div class="field full">
@@ -78,7 +88,7 @@
         </div>
         <div class="field full">
           <label for="arquivoUrl">Link do arquivo de fatiamento</label>
-          <input type="url" id="arquivoUrl" placeholder="https://servidor.exemplo.br/arquivos/protese.gcode">
+          <input type="url" id="arquivoUrl" placeholder="https://servidor.exemplo.br/arquivos/protese.gcode" required>
           <span class="ajuda">Cole o link do arquivo .gcode que já está no servidor.</span>
         </div>
       </div>
