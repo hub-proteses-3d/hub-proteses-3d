@@ -4,6 +4,48 @@ import { CIDADES, MATERIAIS } from "./listas.js";
 
 const TIPOS_UNIDADE = ["fablab", "voluntario", "empresa"];
 
+function somenteDigitos(valor) {
+    return String(valor).replace(/\D/g, "");
+}
+
+function cnpjValido(valor) {
+    const cnpj = somenteDigitos(valor);
+    if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) {
+        return false;
+    }
+    function digito(base) {
+        const pesos = base.length === 12
+            ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+            : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        let soma = 0;
+        for (let i = 0; i < base.length; i++) {
+            soma += Number(base[i]) * pesos[i];
+        }
+        const resto = soma % 11;
+        return resto < 2 ? 0 : 11 - resto;
+    }
+    const d1 = digito(cnpj.slice(0, 12));
+    const d2 = digito(cnpj.slice(0, 12) + d1);
+    return cnpj.endsWith("" + d1 + d2);
+}
+
+// Campos de contato opcionais: só entram no objeto se vierem preenchidos
+function lerContato(dados, destino) {
+    if (typeof dados.telefone === "string" && dados.telefone !== "") {
+        const telefone = somenteDigitos(dados.telefone);
+        if (telefone.length < 10 || telefone.length > 11) {
+            throw new Error("Telefone deve ter 10 ou 11 dígitos com DDD");
+        }
+        destino.telefone = telefone;
+    }
+    if (typeof dados.emailContato === "string" && dados.emailContato !== "") {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.emailContato)) {
+            throw new Error("Email de contato inválido");
+        }
+        destino.emailContato = dados.emailContato.toLowerCase();
+    }
+}
+
 export async function criarParceiro(dados) {
     if (typeof dados.nome !== "string" || dados.nome === "") {
         throw new Error("Nome é obrigatório");
@@ -29,8 +71,18 @@ export async function criarParceiro(dados) {
         criadoEm: new Date(),
     };
     if (typeof dados.cnpj === "string" && dados.cnpj !== "") {
-        parceiro.cnpj = dados.cnpj;
+        if (!cnpjValido(dados.cnpj)) {
+            throw new Error("CNPJ inválido");
+        }
+        parceiro.cnpj = somenteDigitos(dados.cnpj);
     }
+    if (typeof dados.uf === "string" && dados.uf !== "") {
+        if (!/^[A-Za-z]{2}$/.test(dados.uf)) {
+            throw new Error("UF deve ter 2 letras");
+        }
+        parceiro.uf = dados.uf.toUpperCase();
+    }
+    lerContato(dados, parceiro);
     const resultado = await
         getDb().collection("parceiros").insertOne(parceiro);
     return resultado.insertedId;
@@ -72,6 +124,18 @@ export async function adicionarImpressora(parceiroId, dados) {
         tecnologia: dados.tecnologia,
         quantidade: dados.quantidade,
     };
+    if (typeof dados.marca === "string" && dados.marca !== "") {
+        impressora.marca = dados.marca;
+    }
+    if (dados.volumeUtil !== undefined) {
+        const volume = dados.volumeUtil || {};
+        for (const eixo of ["x", "y", "z"]) {
+            if (typeof volume[eixo] !== "number" || volume[eixo] <= 0) {
+                throw new Error("Volume útil deve ter x, y e z em milímetros");
+            }
+        }
+        impressora.volumeUtil = { x: volume.x, y: volume.y, z: volume.z };
+    }
     const resultado = await
     getDb().collection("parceiros").updateOne(
         {_id: new ObjectId(parceiroId)},
@@ -134,5 +198,44 @@ export async function removerFilamento(parceiroId, filamentoId) {
     );
     if (resultado.modifiedCount === 0) {
         throw new Error("Filamento não encontrado");
+    }
+}
+export async function atualizarContato(parceiroId, dados) {
+    if (!ObjectId.isValid(parceiroId)) {
+        throw new Error("Parceiro inválido");
+    }
+    const mudanca = {};
+    lerContato(dados, mudanca);
+    if (dados.capacidadeMensal !== undefined) {
+        if (!Number.isInteger(dados.capacidadeMensal) || dados.capacidadeMensal < 0) {
+            throw new Error("Capacidade mensal inválida");
+        }
+        mudanca.capacidadeMensal = dados.capacidadeMensal;
+    }
+    if (Object.keys(mudanca).length === 0) {
+        throw new Error("Nenhum campo para alterar");
+    }
+    const resultado = await getDb().collection("parceiros").updateOne(
+        { _id: new ObjectId(parceiroId) },
+        { $set: mudanca }
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Parceiro não encontrado");
+    }
+}
+
+export async function alterarHomologacao(parceiroId, homologado) {
+    if (!ObjectId.isValid(parceiroId)) {
+        throw new Error("Parceiro inválido");
+    }
+    if (typeof homologado !== "boolean") {
+        throw new Error("Informe homologado como true ou false");
+    }
+    const resultado = await getDb().collection("parceiros").updateOne(
+        { _id: new ObjectId(parceiroId) },
+        { $set: { homologado: homologado } }
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Parceiro não encontrado");
     }
 }

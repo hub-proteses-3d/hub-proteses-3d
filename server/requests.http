@@ -1,0 +1,289 @@
+### Testes da API com a extensão REST Client do VS Code.
+### Antes: rode "node --env-file=.env server/dados-exemplo.js <senha>" e
+### "node --env-file=.env server/criar-admin.js <nome> <email> <senha>".
+### A sessão fica no cookie, então cada login troca o usuário das requisições seguintes.
+### Execute de cima para baixo.
+
+@baseUrl = http://localhost:3000/api
+@senhaExemplo = troque-pela-senha-usada-no-dados-exemplo
+@adminEmail = admin@exemplo.com
+@adminSenha = troque-pela-senha-do-admin
+
+### Servidor funcionando
+GET {{baseUrl}}/status
+
+
+### ---------- ADMIN ----------
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "senha": "{{adminSenha}}"
+}
+
+### Usuário logado
+GET {{baseUrl}}/eu
+
+### Criar usuário da AACD sem senha (a resposta traz senhaProvisoria uma única vez)
+# @name criarUsuario
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Equipe Clínica AACD",
+  "email": "clinica@exemplo.com",
+  "tipo": "aacd",
+  "nivel": 2
+}
+
+### Listar usuários (filtros opcionais: tipo, ativo)
+GET {{baseUrl}}/usuarios?tipo=aacd
+
+### Desativar usuário
+POST {{baseUrl}}/usuario/ativo?id={{criarUsuario.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "ativo": false
+}
+
+### Reativar usuário
+POST {{baseUrl}}/usuario/ativo?id={{criarUsuario.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "ativo": true
+}
+
+### Criar parceiro com contato
+POST {{baseUrl}}/parceiros
+Content-Type: application/json
+
+{
+  "nome": "FabLab Instituto Mauá",
+  "tipoUnidade": "fablab",
+  "cidade": "São Caetano do Sul",
+  "uf": "SP",
+  "cnpj": "11.222.333/0001-81",
+  "telefone": "(11) 4239-3000",
+  "emailContato": "fablab@exemplo.com",
+  "capacidadeMensal": 20
+}
+
+### Listar parceiros
+# @name parceiros
+GET {{baseUrl}}/parceiros
+
+###
+@parceiroId = {{parceiros.response.body.$[0]._id}}
+
+### Detalhe do parceiro
+GET {{baseUrl}}/parceiro?id={{parceiroId}}
+
+### Homologar parceiro
+POST {{baseUrl}}/parceiro/homologacao?id={{parceiroId}}
+Content-Type: application/json
+
+{
+  "homologado": true
+}
+
+
+### ---------- AACD ----------
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "aacd@exemplo.com",
+  "senha": "{{senhaExemplo}}"
+}
+
+### Criar pedido
+# @name criarPedido
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+  "codigoCaso": "C-2001",
+  "tipoProtese": "Mão mecânica infantil",
+  "urgencia": "alta",
+  "material": "PLA",
+  "infillMinimo": 30,
+  "cidade": "Santo André",
+  "arquivoUrl": "https://arquivos.exemplo.com/C-2001.gcode",
+  "responsavelClinico": "Dra. Ana Souza",
+  "prazoEstimado": "2027-03-01"
+}
+
+###
+@numero = {{criarPedido.response.body.$.numero}}
+
+### Listar pedidos (filtros opcionais: status, urgencia, codigoCaso)
+GET {{baseUrl}}/pedidos?status=Aberto
+
+### Editar pedido (só enquanto Aberto)
+POST {{baseUrl}}/pedido/editar?numero={{numero}}
+Content-Type: application/json
+
+{
+  "observacoes": "Tamanho infantil, lado esquerdo"
+}
+
+### Sugestões de parceiros (mesma cidade primeiro, menos ocupados antes)
+GET {{baseUrl}}/pedido/sugestoes?numero={{numero}}
+
+### Atribuir ao parceiro
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Atribuído",
+  "parceiroId": "{{parceiroId}}"
+}
+
+
+### ---------- PARCEIRO ----------
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "fablab@exemplo.com",
+  "senha": "{{senhaExemplo}}"
+}
+
+### Atualizar contato e capacidade
+POST {{baseUrl}}/parceiro/contato?id={{parceiroId}}
+Content-Type: application/json
+
+{
+  "telefone": "(11) 99999-8888",
+  "capacidadeMensal": 25
+}
+
+### Adicionar impressora com marca e volume útil
+POST {{baseUrl}}/impressoras?parceiroId={{parceiroId}}
+Content-Type: application/json
+
+{
+  "modelo": "X1 Carbon",
+  "marca": "Bambu Lab",
+  "tecnologia": "FDM",
+  "quantidade": 1,
+  "volumeUtil": { "x": 256, "y": 256, "z": 256 }
+}
+
+### Pedidos do parceiro
+GET {{baseUrl}}/pedidos
+
+### Atribuído -> Em impressão
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Em impressão"
+}
+
+### Em impressão -> Enviado
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Enviado",
+  "observacao": "Enviado pelos Correios"
+}
+
+
+### ---------- AACD: validação ----------
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "aacd@exemplo.com",
+  "senha": "{{senhaExemplo}}"
+}
+
+### Enviado -> Em validação
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Em validação"
+}
+
+### Em validação -> Aprovado
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Aprovado",
+  "validacaoMecanica": { "aprovada": true, "observacoes": "Encaixe correto" },
+  "validacaoSanitaria": { "aprovada": true }
+}
+
+### Aprovado -> Entregue
+POST {{baseUrl}}/pedido/status?numero={{numero}}
+Content-Type: application/json
+
+{
+  "status": "Entregue",
+  "observacao": "Entregue ao responsável na unidade AACD"
+}
+
+### Detalhe com histórico
+GET {{baseUrl}}/pedido?numero={{numero}}
+
+### Criar e excluir um pedido Aberto
+# @name pedidoExcluir
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+  "codigoCaso": "C-2002",
+  "tipoProtese": "Prótese de dedo",
+  "urgencia": "baixa",
+  "material": "PLA",
+  "infillMinimo": 20,
+  "cidade": "Mauá",
+  "arquivoUrl": "https://arquivos.exemplo.com/C-2002.gcode"
+}
+
+###
+DELETE {{baseUrl}}/pedido?numero={{pedidoExcluir.response.body.$.numero}}
+
+
+### ---------- Erros ----------
+
+### Prazo no passado -> 400
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+  "codigoCaso": "C-9999",
+  "tipoProtese": "Teste",
+  "urgencia": "alta",
+  "material": "PLA",
+  "infillMinimo": 30,
+  "cidade": "Santo André",
+  "arquivoUrl": "https://arquivos.exemplo.com/x.gcode",
+  "prazoEstimado": "2020-01-01"
+}
+
+### Trocar senha igual à atual -> 400
+POST {{baseUrl}}/alterar-senha
+Content-Type: application/json
+
+{
+  "senhaAtual": "{{senhaExemplo}}",
+  "novaSenha": "{{senhaExemplo}}"
+}
+
+### Sair
+POST {{baseUrl}}/logout
+
+### Sem login -> 401
+GET {{baseUrl}}/eu

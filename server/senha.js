@@ -13,3 +13,14 @@ export function conferirSenha(senha, senhaGuardada) {
     const hash = crypto.scryptSync(senha, sal, 64).toString('hex');
     return hash === hashGuardado;
 }
+
+const CARACTERES_SENHA = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+
+export function gerarSenhaProvisoria() {
+    const bytes = crypto.randomBytes(12);
+    let senha = '';
+    for (const byte of bytes) {
+        senha += CARACTERES_SENHA[byte % CARACTERES_SENHA.length];
+    }
+    return senha;
+}

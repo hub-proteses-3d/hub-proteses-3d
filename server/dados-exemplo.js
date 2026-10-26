@@ -16,6 +16,7 @@ async function novoParceiro(nome, tipoUnidade, cidade, homologado, materiais) {
         nome: nome,
         tipoUnidade: tipoUnidade,
         cidade: cidade,
+        uf: "SP",
         capacidadeMensal: 20,
         biocompatibilidadeValidada: materiais.includes("PLA Biocompatível"),
         homologado: homologado,
@@ -50,6 +51,7 @@ async function novoPedido(codigoCaso, tipoProtese, urgencia, material, cidade) {
         infillMinimo: 30,
         cidade: cidade,
         arquivoUrl: "https://arquivos.exemplo.com/" + codigoCaso + ".gcode",
+        prazoEstimado: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     }, aacd._id);
 }
 
@@ -69,7 +71,10 @@ await mudarStatus(p4, "Atribuído", aacd, atribuir);
 await mudarStatus(p4, "Em impressão", parceiro, {});
 await mudarStatus(p4, "Enviado", parceiro, {});
 await mudarStatus(p4, "Em validação", aacd, {});
-await mudarStatus(p4, "Aprovado", aacd, {});
+await mudarStatus(p4, "Aprovado", aacd, {
+    validacaoMecanica: { aprovada: true },
+    validacaoSanitaria: { aprovada: true },
+});
 await mudarStatus(p4, "Entregue", aacd, {});
 
 const p5 = await novoPedido("C-1005", "Órtese de tornozelo", "alta", "PLA", "Diadema");
@@ -77,7 +82,14 @@ await mudarStatus(p5, "Atribuído", aacd, atribuir);
 await mudarStatus(p5, "Em impressão", parceiro, {});
 await mudarStatus(p5, "Enviado", parceiro, {});
 await mudarStatus(p5, "Em validação", aacd, {});
-await mudarStatus(p5, "Reprovado", aacd, { motivo: "Encaixe do punho ficou apertado" });
-console.log("5 pedidos criados");
+await mudarStatus(p5, "Reprovado", aacd, {
+    motivo: "Encaixe do punho ficou apertado",
+    validacaoMecanica: { aprovada: false, observacoes: "Folga de 4 mm no punho" },
+});
+
+const p6 = await novoPedido("C-1006", "Mão infantil", "media", "PLA", "Santo André");
+await mudarStatus(p6, "Atribuído", aacd, atribuir);
+await mudarStatus(p6, "Aberto", parceiro, { observacao: "Sem filamento disponível este mês" });
+console.log("6 pedidos criados");
 
 process.exit(0);

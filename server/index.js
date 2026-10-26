@@ -1,14 +1,19 @@
 import http from "node:http";
 import { conectar } from "./db.js";
 import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
-import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
-import { conferirSenha } from "./senha.js";
-import { criarUsuario, buscarUsuarioPorEmail, alterarSenha } from "./usuarios.js";
+import { criarSessao, buscarUsuarioDaSessao, apagarSessao, apagarSessoesDoUsuario, lerToken } from "./sessoes.js";
+import { conferirSenha, gerarSenhaProvisoria } from "./senha.js";
+import { criarUsuario, buscarUsuarioPorEmail, alterarSenha, listarUsuarios, alterarAtivo } from "./usuarios.js";
 import {
     criarParceiro, listarParceiros, buscarParceiroPorId,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
+    atualizarContato, alterarHomologacao,
 } from "./parceiros.js";
-import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus, sugerirParceiros } from "./pedidos.js";
+import {
+    criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus, sugerirParceiros,
+    editarPedido, removerPedido,
+} from "./pedidos.js";
+import { bloqueado, registrarFalha, limparFalhas } from "./tentativas.js";
 
 
 const OITO_HORAS = 8 * 60 * 60;
@@ -39,15 +44,26 @@ async function rotas(req, res) {
         return;
     }
     if (metodo === "POST" && caminho === "/api/login") {
+        if (bloqueado(req)) {
+            responderJson(res, 429, { erro: "Muitas tentativas de login. Tente novamente em 15 minutos" });
+            return;
+        }
         const dados = await lerCorpo(req);
         const conta = await buscarUsuarioPorEmail(dados.email);
-        if (conta === null || typeof dados.senha !== "string" || !conferirSenha(dados.senha, conta.senha)) {
+        if (conta === null || conta.ativo === false || typeof dados.senha !== "string" || !conferirSenha(dados.senha, conta.senha)) {
+            registrarFalha(req);
             responderJson(res, 401, { erro: "Email ou senha incorretos" });
             return;
         }
+        limparFalhas(req);
         const token = await criarSessao(conta._id);
         res.setHeader("Set-Cookie", "sessao=" + token + "; HttpOnly; Path=/; SameSite=Lax; Max-Age=" + OITO_HORAS);
-        responderJson(res, 200, { nome: conta.nome, tipo: conta.tipo, nivel: conta.nivel });
+        responderJson(res, 200, {
+            nome: conta.nome,
+            tipo: conta.tipo,
+            nivel: conta.nivel,
+            deveAlterarSenha: conta.deveAlterarSenha === true,
+        });
         return;
     }
 
@@ -76,7 +92,13 @@ async function rotas(req, res) {
             responderJson(res, 400, { erro: "Senha atual incorreta" });
             return;
         }
+        if (typeof dados.novaSenha === "string" && conferirSenha(dados.novaSenha, conta.senha)) {
+            responderJson(res, 400, { erro: "A nova senha deve ser diferente da atual" });
+            return;
+        }
         await alterarSenha(usuario._id, dados.novaSenha);
+        // As outras sessões abertas com a senha antiga são encerradas
+        await apagarSessoesDoUsuario(usuario._id, lerToken(req));
         responderJson(res, 200, { mensagem: "Senha alterada" });
         return;
     }
@@ -86,8 +108,46 @@ async function rotas(req, res) {
             return;
         }
         const dados = await lerCorpo(req);
+        // Sem senha informada, gera uma provisória que só aparece nesta resposta
+        const senhaGerada = typeof dados.senha !== "string" || dados.senha === "";
+        if (senhaGerada) {
+            dados.senha = gerarSenhaProvisoria();
+        }
+        dados.deveAlterarSenha = true;
         const id = await criarUsuario(dados);
-        responderJson(res, 201, { id: id });
+        const resposta = { id: id };
+        if (senhaGerada) {
+            resposta.senhaProvisoria = dados.senha;
+        }
+        responderJson(res, 201, resposta);
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/usuarios") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        responderJson(res, 200, await listarUsuarios({
+            tipo: url.searchParams.get("tipo"),
+            ativo: url.searchParams.get("ativo"),
+        }));
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/usuario/ativo") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const id = url.searchParams.get("id");
+        if (id === String(usuario._id)) {
+            responderJson(res, 400, { erro: "Você não pode desativar a própria conta" });
+            return;
+        }
+        const dados = await lerCorpo(req);
+        await alterarAtivo(id, dados.ativo);
+        responderJson(res, 200, { mensagem: dados.ativo ? "Usuário ativado" : "Usuário desativado" });
         return;
     }
 
@@ -114,6 +174,29 @@ async function rotas(req, res) {
             return;
         }
         responderJson(res, 200, parceiro);
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/parceiro/contato") {
+        const parceiroId = url.searchParams.get("id");
+        if (!podeEditarParceiro(usuario, parceiroId)) {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        await atualizarContato(parceiroId, dados);
+        responderJson(res, 200, { mensagem: "Dados do parceiro alterados" });
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/parceiro/homologacao") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        await alterarHomologacao(url.searchParams.get("id"), dados.homologado);
+        responderJson(res, 200, { mensagem: dados.homologado ? "Parceiro homologado" : "Homologação removida" });
         return;
     }
 
@@ -159,7 +242,27 @@ async function rotas(req, res) {
     }
 
     if (metodo === "GET" && caminho === "/api/pedidos") {
-        responderJson(res, 200, await listarPedidos(usuario));
+        responderJson(res, 200, await listarPedidos(usuario, {
+            status: url.searchParams.get("status"),
+            urgencia: url.searchParams.get("urgencia"),
+            codigoCaso: url.searchParams.get("codigoCaso"),
+        }));
+        return;
+    }
+
+    if ((metodo === "POST" && caminho === "/api/pedido/editar") || (metodo === "DELETE" && caminho === "/api/pedido")) {
+        if (usuario.tipo !== "aacd" || usuario.nivel < 2) {
+            semPermissao(res);
+            return;
+        }
+        const numero = url.searchParams.get("numero");
+        if (metodo === "DELETE") {
+            await removerPedido(numero);
+            responderJson(res, 200, { mensagem: "Pedido excluído" });
+        } else {
+            await editarPedido(numero, await lerCorpo(req));
+            responderJson(res, 200, { mensagem: "Pedido alterado" });
+        }
         return;
     }
 

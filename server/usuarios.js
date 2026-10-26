@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { getDb } from './db.js';
 import { gerarHash } from './senha.js';
 import { buscarParceiroPorId } from "./parceiros.js";
@@ -28,6 +29,8 @@ export async function criarUsuario(dados) {
         senha: gerarHash(dados.senha),
         tipo: dados.tipo,
         nivel: dados.nivel,
+        ativo: true,
+        deveAlterarSenha: dados.deveAlterarSenha === true,
         criadoEm: new Date(),
     };
     if (dados.tipo === "parceiro") {
@@ -60,9 +63,38 @@ export async function alterarSenha(usuarioId, novaSenha) {
     }
     await getDb().collection("usuarios").updateOne(
         { _id: usuarioId },
-        { $set: { senha: gerarHash(novaSenha) } }
+        { $set: { senha: gerarHash(novaSenha), deveAlterarSenha: false } }
     );
 }
 
+export async function listarUsuarios(filtros) {
+    const filtro = {};
+    if (TIPOS.includes(filtros.tipo)) {
+        filtro.tipo = filtros.tipo;
+    }
+    if (filtros.ativo === "true") {
+        filtro.ativo = { $ne: false };
+    }
+    if (filtros.ativo === "false") {
+        filtro.ativo = false;
+    }
+    return getDb().collection("usuarios").find(filtro, { projection: { senha: 0 } }).sort({ nome: 1 }).toArray();
+}
+
+export async function alterarAtivo(id, ativo) {
+    if (!ObjectId.isValid(id)) {
+        throw new Error("Usuário inválido");
+    }
+    if (typeof ativo !== "boolean") {
+        throw new Error("Informe ativo como true ou false");
+    }
+    const resultado = await getDb().collection("usuarios").updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { ativo: ativo } }
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Usuário não encontrado");
+    }
+}
 
 

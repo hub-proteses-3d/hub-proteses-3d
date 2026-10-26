@@ -10,7 +10,7 @@ export async function criarSessao(usuarioId) {
     return token;
 }
 
-function lerToken(req) {
+export function lerToken(req) {
     const cookies = req.headers.cookie || "";
     for (const parte of cookies.split(";")) {
         const [nome, valor] = parte.trim().split("=");
@@ -32,10 +32,17 @@ export async function buscarUsuarioDaSessao(req) {
         return null;
     }
     return getDb().collection("usuarios").findOne(
-        {_id: sessao.usuarioId},
+        {_id: sessao.usuarioId, ativo: {$ne: false}},
         {projection: {senha: 0}}
     );
-} 
+}
+
+export async function apagarSessoesDoUsuario(usuarioId, tokenMantido) {
+    await getDb().collection("sessoes").deleteMany({
+        usuarioId: usuarioId,
+        token: {$ne: tokenMantido},
+    });
+}
 
 export async function apagarSessao(req) {
     const token = lerToken(req);
