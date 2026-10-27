@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolher parceiro - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/matchmaking.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="aacd-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="aacd-dashboard.html">Dashboard</a>
+      <a href="aacd-nova-demanda.html" class="active">Nova Demanda</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name">AACD · Eng. Clínica</span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <a href="aacd-dashboard.html" class="back-link">← Voltar ao painel</a>
+    <h1 class="page-title">Escolher parceiro — Pedido #<span id="numero-titulo"></span></h1>
+    <p class="page-subtitle">Sugestão simples: parceiros que têm o material do pedido, primeiro os da mesma cidade. Só aparecem parceiros homologados.</p>
+
+    <div class="matchmaking">
+      <section class="card card-pad">
+        <h2>Pedido Selecionado — #<span id="numero-cartao"></span></h2>
+        <dl id="dados-pedido" class="dados"></dl>
+      </section>
+      <section>
+        <h2>Parceiros compatíveis</h2>
+        <p id="mensagem" class="mensagem" hidden></p>
+        <div id="lista-parceiros"></div>
+      </section>
+    </div>
+  </main>
+  <script src="js/matchmaking.js"></script>
+</body>
+</html>
