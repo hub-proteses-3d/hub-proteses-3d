@@ -74,9 +74,14 @@ function mostrarPedidos(pedidos) {
 
     const celulaLink = document.createElement("td");
     const link = document.createElement("a");
-    link.href = "aacd-acompanhamento.html?numero=" + pedido.numero;
     link.className = "btn-link";
-    link.textContent = "Ver detalhes →";
+    if (pedido.status === "Aberto") {
+      link.href = "aacd-matchmaking.html?numero=" + pedido.numero;
+      link.textContent = "Escolher parceiro →";
+    } else {
+      link.href = "aacd-acompanhamento.html?numero=" + pedido.numero;
+      link.textContent = "Ver detalhes →";
+    }
     celulaLink.appendChild(link);
     linha.appendChild(celulaLink);
 
