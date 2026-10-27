@@ -46,3 +46,7 @@
   font-size: 13px;
   color: var(--teal-dark);
 }
+
+.mensagem-erro {
+  color: var(--danger);
+}
