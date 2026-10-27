@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acompanhamento - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/parceiro.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="parceiro-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="parceiro-dashboard.html" class="active">Dashboard</a>
+      <a href="parceiro-minha-unidade.html">Minha unidade</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span id="nome-unidade" class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <a id="voltar" href="parceiro-dashboard.html" class="back-link">← Voltar à demanda</a>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Acompanhamento — Pedido #<span id="numero"></span></h1>
+        <p id="subtitulo" class="page-subtitle"></p>
+      </div>
+      <button type="button" id="proxima" class="btn btn-primary" hidden></button>
+    </div>
+
+    <p id="erro" class="aviso aviso-erro" hidden></p>
+
+    <div class="card card-pad linha-tempo">
+      <div id="linha-tempo" class="stepper"></div>
+    </div>
+    <p class="dica">Reprovado não aparece na linha: quando a AACD reprova, o pedido é encerrado com o motivo e a AACD abre outro pedido para outro parceiro.</p>
+    <p id="reprovado" class="aviso aviso-erro" hidden></p>
+
+    <div class="two-col resumo-unidade">
+      <section class="card card-pad">
+        <h2 class="card-titulo">Detalhes do Pedido</h2>
+        <div id="dados-pedido"></div>
+      </section>
+      <section class="card card-pad">
+        <h2 class="card-titulo">Validação da prótese</h2>
+        <div id="dados-validacao"></div>
+      </section>
+    </div>
+  </main>
+  <script src="js/parceiro-comum.js"></script>
+  <script src="js/parceiro-acompanhamento.js"></script>
+</body>
+</html>

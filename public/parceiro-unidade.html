@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da unidade - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/parceiro.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="parceiro-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="parceiro-dashboard.html">Dashboard</a>
+      <a href="parceiro-minha-unidade.html">Minha unidade</a>
+      <a href="rede-producao.html" class="active">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span id="nome-unidade" class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <a href="rede-producao.html" class="back-link">← Voltar à rede de produção</a>
+    <h1 id="nome" class="page-title"></h1>
+    <p id="subtitulo" class="page-subtitle"></p>
+    <p id="erro" class="aviso aviso-erro" hidden></p>
+
+    <div class="two-col resumo-unidade">
+      <section class="card card-pad">
+        <h2 class="card-titulo">Capacidade Técnica</h2>
+        <div id="dados-capacidade"></div>
+      </section>
+      <section class="card card-pad">
+        <h2 class="card-titulo">Histórico</h2>
+        <div id="dados-historico"></div>
+      </section>
+    </div>
+  </main>
+  <script src="js/parceiro-comum.js"></script>
+  <script src="js/parceiro-unidade.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Produção - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/parceiro.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="parceiro-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="parceiro-dashboard.html" class="active">Dashboard</a>
+      <a href="parceiro-minha-unidade.html">Minha unidade</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span id="nome-unidade" class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Painel de Produção</h1>
+        <p id="subtitulo" class="page-subtitle">Demandas recebidas e sua capacidade produtiva</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div id="total-aguardando" class="kpi-value texto-warning">0</div>
+        <div class="kpi-label">Aguardando resposta</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-impressao" class="kpi-value texto-teal">0</div>
+        <div class="kpi-label">Em impressão</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-capacidade" class="kpi-value texto-navy">0</div>
+        <div class="kpi-label">Capacidade: peças por mês</div>
+      </div>
+      <div class="kpi-card">
+        <div id="total-entregues" class="kpi-value texto-success">0</div>
+        <div class="kpi-label">Entregues no Mês</div>
+      </div>
+    </div>
+
+    <div class="card card-tabela">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Pedido</th>
+            <th>Tipo de Prótese</th>
+            <th>Urgência</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="lista-pedidos">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-pad resumo-unidade">
+      <div id="resumo-unidade"></div>
+      <a href="parceiro-minha-unidade.html" class="btn-link link-direita">Editar em Minha unidade →</a>
+    </div>
+  </main>
+  <script src="js/parceiro-comum.js"></script>
+  <script src="js/parceiro-dashboard.js"></script>
+</body>
+</html>
