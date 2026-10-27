@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minha unidade - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/parceiro.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="parceiro-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="parceiro-dashboard.html">Dashboard</a>
+      <a href="parceiro-minha-unidade.html" class="active">Minha unidade</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span id="nome-unidade" class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <h1 class="page-title">Minha unidade</h1>
+    <p id="subtitulo" class="page-subtitle"></p>
+    <p id="erro" class="aviso aviso-erro" hidden></p>
+
+    <div class="secao-header">
+      <h2 class="secao-titulo">Impressoras</h2>
+      <button type="button" id="nova-impressora" class="btn btn-primary btn-pequeno" hidden>+ Adicionar impressora</button>
+    </div>
+    <form id="form-impressora" class="card card-pad form-inline" hidden>
+      <div class="field">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" required>
+      </div>
+      <div class="field">
+        <label for="tecnologia">Tecnologia</label>
+        <input type="text" id="tecnologia" placeholder="FDM" required>
+      </div>
+      <div class="field">
+        <label for="quantidade">Quantidade</label>
+        <input type="number" id="quantidade" min="1" value="1" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+    <div class="card card-tabela">
+      <table>
+        <thead>
+          <tr>
+            <th>Modelo</th>
+            <th>Tecnologia</th>
+            <th>Quantidade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="lista-impressoras">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="secao-header">
+      <h2 class="secao-titulo">Filamentos</h2>
+      <button type="button" id="novo-filamento" class="btn btn-primary btn-pequeno" hidden>+ Adicionar filamento</button>
+    </div>
+    <form id="form-filamento" class="card card-pad form-inline" hidden>
+      <div class="field">
+        <label for="material">Material</label>
+        <select id="material" required>
+          <option value="PLA">PLA</option>
+          <option value="PETG">PETG</option>
+          <option value="PLA Biocompatível">PLA Biocompatível</option>
+        </select>
+      </div>
+      <div class="field field-check">
+        <input type="checkbox" id="biocompativel">
+        <label for="biocompativel">Biocompatível</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+    <div class="card card-tabela">
+      <table>
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Biocompatível</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="lista-filamentos">
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script src="js/parceiro-comum.js"></script>
+  <script src="js/parceiro-minha-unidade.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da demanda - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/parceiro.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="parceiro-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="parceiro-dashboard.html" class="active">Dashboard</a>
+      <a href="parceiro-minha-unidade.html">Minha unidade</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span id="nome-unidade" class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <a href="parceiro-dashboard.html" class="back-link">← Voltar ao painel</a>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Demanda #<span id="numero"></span></h1>
+        <p id="subtitulo" class="page-subtitle"></p>
+      </div>
+      <div class="acoes-topo">
+        <div class="acoes">
+          <button type="button" id="recusar" class="btn btn-recusar" hidden>Recusar</button>
+          <button type="button" id="aceitar" class="btn btn-primary" hidden>Aceitar</button>
+          <a id="ver-acompanhamento" class="btn btn-secondary" hidden>Ver Acompanhamento Completo</a>
+          <button type="button" id="enviar" class="btn btn-primary" hidden>Marcar como enviado</button>
+        </div>
+        <p id="dica-recusar" class="dica" hidden>Ao recusar, o pedido volta para Aberto e a AACD escolhe outro parceiro.</p>
+      </div>
+    </div>
+
+    <p id="aviso" class="aviso" hidden>Este pedido foi atribuído à sua unidade e está aguardando a sua resposta.</p>
+    <p id="erro" class="aviso aviso-erro" hidden></p>
+
+    <div class="two-col">
+      <section class="card card-pad">
+        <div id="dados-pedido"></div>
+      </section>
+      <div class="coluna">
+        <section class="card card-pad">
+          <h2 class="card-titulo">Unidade Responsável</h2>
+          <p id="unidade" class="card-texto"></p>
+          <a id="link-unidade" class="btn btn-secondary btn-pequeno">Ver Detalhes da Unidade →</a>
+        </section>
+        <section class="card card-pad">
+          <h2 class="card-titulo">Próxima etapa</h2>
+          <div id="etapas" class="etapas"></div>
+          <p id="texto-etapa" class="dica"></p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script src="js/parceiro-comum.js"></script>
+  <script src="js/parceiro-demanda.js"></script>
+</body>
+</html>
