@@ -111,7 +111,7 @@ async function carregarDemanda() {
     mostrarProximaEtapa(pedido);
     mostrarBotoes(pedido, dados.usuario);
   } catch (falha) {
-    mostrarErro(falha.message);
+    mostrarFalhaPedido(falha.message);
   }
 }
 

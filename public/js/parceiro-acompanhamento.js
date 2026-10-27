@@ -104,7 +104,7 @@ async function carregarAcompanhamento() {
     mostrarPedido(pedido);
     mostrarBotao(pedido, dados.usuario);
   } catch (falha) {
-    mostrarErro(falha.message);
+    mostrarFalhaPedido(falha.message);
   }
 }
 
