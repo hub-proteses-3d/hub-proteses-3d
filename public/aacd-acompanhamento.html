@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acompanhamento - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/acompanhamento.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="aacd-dashboard.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="aacd-dashboard.html" class="active">Dashboard</a>
+      <a href="aacd-nova-demanda.html">Nova Demanda</a>
+      <a href="rede-producao.html">Rede de Produção</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name">AACD · Eng. Clínica</span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <a href="aacd-dashboard.html" class="back-link">← Voltar ao painel</a>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Acompanhamento — Pedido #<span id="numero"></span></h1>
+        <p id="subtitulo" class="page-subtitle"></p>
+      </div>
+      <div id="acoes" class="acoes"></div>
+    </div>
+    <p id="mensagem" class="mensagem" hidden></p>
+
+    <div class="card card-pad">
+      <div id="linha-do-tempo" class="stepper"></div>
+    </div>
+
+    <div class="acomp-grid">
+      <section class="card card-pad">
+        <h2>Detalhes do Pedido</h2>
+        <div id="detalhes"></div>
+      </section>
+      <section class="card card-pad">
+        <h2>Validação da prótese</h2>
+        <div id="validacao"></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="janela-reprovar" class="janela">
+    <form id="form-reprovar">
+      <h2>Reprovar pedido #<span id="numero-janela"></span></h2>
+      <p>O parceiro vai receber este motivo. O pedido é encerrado como Reprovado.</p>
+      <div class="field">
+        <label for="motivo">Motivo (obrigatório)</label>
+        <textarea id="motivo" placeholder="Explique o que precisa ser corrigido na prótese" required></textarea>
+      </div>
+      <div class="acoes">
+        <button type="button" id="cancelar-reprovar" class="btn btn-secondary">Cancelar</button>
+        <button type="submit" class="btn btn-perigo">Confirmar reprovação</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="js/acompanhamento.js"></script>
+</body>
+</html>
