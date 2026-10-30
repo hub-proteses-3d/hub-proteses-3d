@@ -32,7 +32,7 @@ export async function buscarUsuarioDaSessao(req) {
         return null;
     }
     return getDb().collection("usuarios").findOne(
-        {_id: sessao.usuarioId},
+        {_id: sessao.usuarioId, ativo: {$ne: false}},
         {projection: {senha: 0}}
     );
 } 
