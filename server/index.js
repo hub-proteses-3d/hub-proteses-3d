@@ -3,7 +3,7 @@ import { conectar } from "./db.js";
 import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
 import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
 import { conferirSenha } from "./senha.js";
-import { criarUsuario, buscarUsuarioPorEmail, alterarSenha } from "./usuarios.js";
+import { criarUsuario, buscarUsuarioPorEmail, alterarSenha, listarUsuarios, alterarAtivo } from "./usuarios.js";
 import {
     criarParceiro, listarParceiros, buscarParceiroPorId,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
@@ -41,7 +41,7 @@ async function rotas(req, res) {
     if (metodo === "POST" && caminho === "/api/login") {
         const dados = await lerCorpo(req);
         const conta = await buscarUsuarioPorEmail(dados.email);
-        if (conta === null || typeof dados.senha !== "string" || !conferirSenha(dados.senha, conta.senha)) {
+        if (conta === null || conta.ativo === false || typeof dados.senha !== "string" || !conferirSenha(dados.senha, conta.senha)) {
             responderJson(res, 401, { erro: "Email ou senha incorretos" });
             return;
         }
@@ -88,6 +88,34 @@ async function rotas(req, res) {
         const dados = await lerCorpo(req);
         const id = await criarUsuario(dados);
         responderJson(res, 201, { id: id });
+        return;
+    }
+
+    if (metodo === "GET" && caminho === "/api/usuarios") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        responderJson(res, 200, await listarUsuarios({
+            tipo: url.searchParams.get("tipo"),
+            ativo: url.searchParams.get("ativo"),
+        }));
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/usuario/ativo") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const id = url.searchParams.get("id");
+        if (id === String(usuario._id)) {
+            responderJson(res, 400, { erro: "Você não pode desativar a própria conta" });
+            return;
+        }
+        const dados = await lerCorpo(req);
+        await alterarAtivo(id, dados.ativo);
+        responderJson(res, 200, { mensagem: dados.ativo ? "Usuário ativado" : "Usuário desativado" });
         return;
     }
 
