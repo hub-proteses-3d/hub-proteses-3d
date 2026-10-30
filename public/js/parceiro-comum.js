@@ -17,10 +17,16 @@ const CORES_STATUS = {
 
 const ETAPAS = ["Aberto", "Atribuído", "Em impressão", "Enviado", "Em validação", "Aprovado", "Entregue"];
 
+const PAGINAS_INICIAIS = {
+  aacd: "aacd-dashboard.html",
+  admin: "admin-usuarios.html",
+};
+
 async function buscarDados(endereco) {
   const resposta = await fetch(endereco);
   if (resposta.status === 401) {
     window.location.href = "login.html";
+    throw new Error("Faça login para continuar");
   }
   const dados = await resposta.json();
   if (!resposta.ok) {
@@ -35,6 +41,10 @@ async function enviarDados(endereco, metodo, corpo) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(corpo),
   });
+  if (resposta.status === 401) {
+    window.location.href = "login.html";
+    throw new Error("Faça login para continuar");
+  }
   const dados = await resposta.json();
   if (!resposta.ok) {
     throw new Error(dados.erro);
@@ -45,7 +55,8 @@ async function enviarDados(endereco, metodo, corpo) {
 async function carregarUnidade() {
   const usuario = await buscarDados("/api/eu");
   if (usuario.tipo !== "parceiro") {
-    window.location.href = "login.html";
+    window.location.href = PAGINAS_INICIAIS[usuario.tipo] || "login.html";
+    throw new Error("Esta página é só para parceiros");
   }
   const parceiro = await buscarDados("/api/parceiro?id=" + usuario.parceiroId);
   document.getElementById("nome-unidade").textContent = parceiro.nome;
@@ -54,6 +65,18 @@ async function carregarUnidade() {
 
 async function mudarStatus(numero, status) {
   await enviarDados("/api/pedido/status?numero=" + numero, "POST", { status: status });
+}
+
+function mostrarFalhaPedido(texto) {
+  document.getElementById("conteudo").hidden = true;
+
+  const falha = document.getElementById("falha");
+  falha.textContent = texto + " ";
+  const link = document.createElement("a");
+  link.href = "parceiro-dashboard.html";
+  link.textContent = "Voltar ao painel";
+  falha.appendChild(link);
+  falha.hidden = false;
 }
 
 function criarEtiqueta(texto, classe) {
