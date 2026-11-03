@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar senha - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/alterar-senha.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </div>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="card senha-card">
+      <h1>Alterar senha</h1>
+      <p class="senha-subtitulo">Informe a senha atual e crie uma nova. O e-mail da conta não pode ser alterado.</p>
+      <form id="form-senha">
+        <div class="field">
+          <label for="senhaAtual">Senha atual</label>
+          <input type="password" id="senhaAtual" placeholder="••••••••" required>
+        </div>
+        <div class="field">
+          <label for="novaSenha">Nova senha</label>
+          <input type="password" id="novaSenha" placeholder="••••••••" minlength="6" required>
+        </div>
+        <div class="field">
+          <label for="confirmarSenha">Confirmar nova senha</label>
+          <input type="password" id="confirmarSenha" placeholder="••••••••" minlength="6" required>
+        </div>
+        <p id="mensagem" class="mensagem" hidden></p>
+        <button type="submit" class="btn btn-primary">Salvar nova senha</button>
+      </form>
+      <button type="button" id="cancelar" class="btn-link">Cancelar</button>
+    </section>
+  </main>
+  <script src="js/alterar-senha.js"></script>
+  <script src="js/sessao.js"></script>
+</body>
+</html>
