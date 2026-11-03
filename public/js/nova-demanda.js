@@ -40,7 +40,7 @@ form.addEventListener("submit", async (evento) => {
       mostrarMensagem(dados.erro, true);
       return;
     }
-    window.location.href = "aacd-matchmaking.html?numero=" + dados.numero;
+    window.location.href = "aacd-matchmaking.html?numero=" + dados.numero + "&novo=1";
   } catch {
     mostrarMensagem("Não foi possível conectar ao servidor.", true);
   }

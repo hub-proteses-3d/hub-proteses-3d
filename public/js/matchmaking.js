@@ -1,4 +1,5 @@
 const numero = new URLSearchParams(window.location.search).get("numero");
+const novo = new URLSearchParams(window.location.search).get("novo");
 const dadosPedido = document.getElementById("dados-pedido");
 const lista = document.getElementById("lista-parceiros");
 const mensagem = document.getElementById("mensagem");
@@ -62,6 +63,11 @@ async function atribuir(pedido, parceiro) {
     }
     lista.textContent = "";
     mostrarMensagem("Pedido #" + pedido.numero + " atribuído a " + parceiro.nome + ".", false);
+        const voltar = document.createElement("a");
+    voltar.href = "aacd-dashboard.html";
+    voltar.className = "btn btn-primary";
+    voltar.textContent = "Voltar ao painel";
+    lista.appendChild(voltar);
   } catch {
     mostrarMensagem("Não foi possível conectar ao servidor.", true);
   }
@@ -99,7 +105,7 @@ function mostrarParceiros(pedido, parceiros) {
 
     const botao = document.createElement("button");
     botao.type = "button";
-    botao.className = "btn btn-claro";
+    botao.className = "btn btn-claro precisa-nivel-2";
     botao.textContent = "Atribuir pedido";
     botao.addEventListener("click", () => {
       atribuir(pedido, parceiro);
@@ -108,7 +114,7 @@ function mostrarParceiros(pedido, parceiros) {
 
     if (primeiro) {
       cartao.className = "match-card top";
-      botao.className = "btn btn-primary";
+      botao.className = "btn btn-primary precisa-nivel-2";
       primeiro = false;
     }
 
@@ -146,6 +152,9 @@ async function carregar() {
     if (pedido.status !== "Aberto") {
       mostrarMensagem("Este pedido está " + pedido.status + ". A escolha de parceiro é só para pedidos Abertos.", true);
       return;
+    }
+        if (novo === "1") {
+      mostrarMensagem("Pedido #" + numero + " criado. Escolha o parceiro.", false);
     }
     const parceiros = await buscar("/api/pedido/sugestoes?numero=" + numero);
     if (parceiros === null) {
