@@ -99,7 +99,7 @@ function mostrarParceiros(pedido, parceiros) {
 
     const botao = document.createElement("button");
     botao.type = "button";
-    botao.className = "btn btn-claro";
+    botao.className = "btn btn-claro precisa-nivel-2";
     botao.textContent = "Atribuir pedido";
     botao.addEventListener("click", () => {
       atribuir(pedido, parceiro);
@@ -108,7 +108,7 @@ function mostrarParceiros(pedido, parceiros) {
 
     if (primeiro) {
       cartao.className = "match-card top";
-      botao.className = "btn btn-primary";
+      botao.className = "btn btn-primary precisa-nivel-2";
       primeiro = false;
     }
 

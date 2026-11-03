@@ -569,3 +569,7 @@ tr.clickable:hover td {
 .texto-success {
   color: var(--success);
 }
+
+.so-visualiza .precisa-nivel-2 {
+  display: none;
+}
