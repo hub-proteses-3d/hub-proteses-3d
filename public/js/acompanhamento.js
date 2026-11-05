@@ -99,6 +99,11 @@ function mostrarDetalhes(pedido) {
 
   adicionarLinha(detalhes, "Código do caso", pedido.codigoCaso);
   adicionarLinha(detalhes, "Data de solicitação", new Date(pedido.criadoEm).toLocaleDateString("pt-BR"));
+  let dataLimite = "—";
+  if (pedido.dataLimite) {
+    dataLimite = new Date(pedido.dataLimite).toLocaleDateString("pt-BR");
+  }
+  adicionarLinha(detalhes, "Data limite", dataLimite);
 
   let responsavel = "—";
   if (pedido.responsavelClinico) {

@@ -25,6 +25,7 @@ function mostrarPedido(pedido) {
   dados.appendChild(linhaDado("Urgência", criarEtiqueta(urgencia.texto, urgencia.classe)));
   dados.appendChild(linhaDado("Código do caso", pedido.codigoCaso));
   dados.appendChild(linhaDado("Data de Solicitação", formatarData(pedido.criadoEm)));
+  dados.appendChild(linhaDado("Data Limite", pedido.dataLimite ? formatarData(pedido.dataLimite) : "—"));
   dados.appendChild(linhaDado("Responsável Clínico", pedido.responsavelClinico || "—"));
   dados.appendChild(linhaDado("Filamento", pedido.material));
   dados.appendChild(linhaDado("Infill mínimo", pedido.infillMinimo + "%"));

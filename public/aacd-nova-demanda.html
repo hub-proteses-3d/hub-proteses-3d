@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="css/componentes.css">
   <link rel="stylesheet" href="css/nova-demanda.css">
 </head>
+
 <body>
   <header class="topbar">
     <a href="aacd-dashboard.html" class="brand">
@@ -86,6 +88,11 @@
           <label for="observacoes">Observações clínicas</label>
           <textarea id="observacoes" placeholder="Não informe nome ou dados pessoais do paciente"></textarea>
         </div>
+        <div class="field">
+          <label for="dataLimite">Data limite de entrega</label>
+          <input type="date" id="dataLimite" required>
+          <span class="ajuda">Obrigatório. Não pode ser alterada depois.</span>
+        </div>
         <div class="field full">
           <label for="arquivoUrl">Link do arquivo de fatiamento</label>
           <input type="url" id="arquivoUrl" placeholder="https://servidor.exemplo.br/arquivos/protese.gcode" required>
@@ -102,4 +109,5 @@
   <script src="js/nova-demanda.js"></script>
   <script src="js/sessao.js"></script>
 </body>
+
 </html>
