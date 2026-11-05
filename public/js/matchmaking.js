@@ -34,6 +34,11 @@ function mostrarPedido(pedido) {
   adicionarDado("Filamento Necessário", pedido.material);
   adicionarDado("Infill Mínimo Exigido", pedido.infillMinimo + "%");
   adicionarDado("Cidade", pedido.cidade);
+  let dataLimite = "—";
+  if (pedido.dataLimite) {
+    dataLimite = new Date(pedido.dataLimite).toLocaleDateString("pt-BR");
+  }
+  adicionarDado("Data Limite", dataLimite);
 
   const arquivo = adicionarDado("Arquivo de Fatiamento", "");
   const link = document.createElement("a");
@@ -63,7 +68,7 @@ async function atribuir(pedido, parceiro) {
     }
     lista.textContent = "";
     mostrarMensagem("Pedido #" + pedido.numero + " atribuído a " + parceiro.nome + ".", false);
-        const voltar = document.createElement("a");
+    const voltar = document.createElement("a");
     voltar.href = "aacd-dashboard.html";
     voltar.className = "btn btn-primary";
     voltar.textContent = "Voltar ao painel";
@@ -153,7 +158,7 @@ async function carregar() {
       mostrarMensagem("Este pedido está " + pedido.status + ". A escolha de parceiro é só para pedidos Abertos.", true);
       return;
     }
-        if (novo === "1") {
+    if (novo === "1") {
       mostrarMensagem("Pedido #" + numero + " criado. Escolha o parceiro.", false);
     }
     const parceiros = await buscar("/api/pedido/sugestoes?numero=" + numero);

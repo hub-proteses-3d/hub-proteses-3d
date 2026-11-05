@@ -1,4 +1,4 @@
-import {getDb} from "./db.js";
+import { getDb } from "./db.js";
 import { CIDADES, MATERIAIS } from "./listas.js";
 import { buscarParceiroPorId } from "./parceiros.js";
 
@@ -10,26 +10,26 @@ function textoValido(valor) {
 }
 async function proximoNumero() {
     const contador = await
-    getDb().collection("contadores").findOneAndUpdate(
-        { _id: "pedidos" },
-        { $inc: { valor: 1 } },
-        { upsert: true, returnDocument: "after" }
-    );
+        getDb().collection("contadores").findOneAndUpdate(
+            { _id: "pedidos" },
+            { $inc: { valor: 1 } },
+            { upsert: true, returnDocument: "after" }
+        );
     return contador.valor;
 }
 
 export async function criarPedido(dados, usuarioId) {
     if (!textoValido(dados.codigoCaso)) {
         throw new Error("Código do caso é obrigatório");
-        
+
     }
     if (!textoValido(dados.tipoProtese)) {
         throw new Error("Tipo de protese é obrigatório");
-        
+
     }
     if (!URGENCIAS.includes(dados.urgencia)) {
         throw new Error("Urgência inválida");
-        
+
     }
     if (!MATERIAIS.includes(dados.material)) {
         throw new Error("Material inválido");
@@ -42,6 +42,15 @@ export async function criarPedido(dados, usuarioId) {
     }
     if (!textoValido(dados.arquivoUrl) || !dados.arquivoUrl.startsWith("http")) {
         throw new Error("Link do arquivo inválido");
+    }
+    if (typeof dados.dataLimite !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dados.dataLimite)) {
+        throw new Error("Data limite inválida");
+    }
+    const dataLimite = new Date(dados.dataLimite + "T00:00:00");
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    if (isNaN(dataLimite.getTime()) || dataLimite <= hoje) {
+        throw new Error("A data limite deve ser depois de hoje");
     }
     const agora = new Date();
     const pedido = {
@@ -56,6 +65,7 @@ export async function criarPedido(dados, usuarioId) {
         status: "Aberto",
         criadoPor: usuarioId,
         criadoEm: agora,
+        dataLimite: dataLimite,
         historico: [{ status: "Aberto", data: agora, usuarioId: usuarioId }],
     };
 

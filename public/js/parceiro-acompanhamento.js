@@ -54,6 +54,7 @@ function mostrarPedido(pedido) {
   dados.appendChild(linhaDado("Status atual", criarEtiqueta(pedido.status, CORES_STATUS[pedido.status])));
   dados.appendChild(linhaDado("Código do caso", pedido.codigoCaso));
   dados.appendChild(linhaDado("Data de Solicitação", formatarData(pedido.criadoEm)));
+  dados.appendChild(linhaDado("Data Limite", pedido.dataLimite ? formatarData(pedido.dataLimite) : "—"));
   dados.appendChild(linhaDado("Responsável Clínico", pedido.responsavelClinico || "—"));
   dados.appendChild(linhaDado("Arquivo de Fatiamento", linkArquivo(pedido.arquivoUrl)));
 

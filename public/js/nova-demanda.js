@@ -23,6 +23,7 @@ form.addEventListener("submit", async (evento) => {
     cidade: document.getElementById("cidade").value,
     observacoes: document.getElementById("observacoes").value.trim(),
     arquivoUrl: document.getElementById("arquivoUrl").value.trim(),
+    dataLimite: document.getElementById("dataLimite").value,
   };
 
   try {
