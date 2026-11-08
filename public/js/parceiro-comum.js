@@ -107,11 +107,16 @@ function linhaDado(rotulo, valor) {
   return linha;
 }
 
-function linkArquivo(url) {
+function linkArquivo(pedido) {
   const link = document.createElement("a");
-  link.href = url;
-  link.target = "_blank";
-  link.textContent = url.split("/").pop();
+  if (pedido.arquivoId) {
+    link.href = "/api/pedido/arquivo?numero=" + pedido.numero;
+    link.textContent = pedido.arquivoNome;
+  } else {
+    link.href = pedido.arquivoUrl;
+    link.target = "_blank";
+    link.textContent = pedido.arquivoUrl.split("/").pop();
+  }
   return link;
 }
 

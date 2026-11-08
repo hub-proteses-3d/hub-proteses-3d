@@ -12,6 +12,15 @@ function mostrarMensagem(texto, erro) {
 
 form.addEventListener("submit", async (evento) => {
   evento.preventDefault();
+  const arquivo = document.getElementById("arquivo").files[0];
+  if (!arquivo || !arquivo.name.toLowerCase().endsWith(".stl")) {
+    mostrarMensagem("Escolha um arquivo .stl.", true);
+    return;
+  }
+  if (arquivo.size > 50 * 1024 * 1024) {
+    mostrarMensagem("O arquivo deve ter até 50 MB.", true);
+    return;
+  }
 
   const pedido = {
     codigoCaso: document.getElementById("codigoCaso").value.trim(),
@@ -22,11 +31,25 @@ form.addEventListener("submit", async (evento) => {
     responsavelClinico: document.getElementById("responsavelClinico").value.trim(),
     cidade: document.getElementById("cidade").value,
     observacoes: document.getElementById("observacoes").value.trim(),
-    arquivoUrl: document.getElementById("arquivoUrl").value.trim(),
     dataLimite: document.getElementById("dataLimite").value,
   };
 
   try {
+    mostrarMensagem("Enviando arquivo...", false);
+    const respostaArquivo = await fetch("/api/arquivos?nome=" + encodeURIComponent(arquivo.name), {
+      method: "POST",
+      body: arquivo,
+    });
+    if (respostaArquivo.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    const dadosArquivo = await respostaArquivo.json();
+    if (!respostaArquivo.ok) {
+      mostrarMensagem(dadosArquivo.erro, true);
+      return;
+    }
+    pedido.arquivoId = dadosArquivo.arquivoId;
     const resposta = await fetch("/api/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

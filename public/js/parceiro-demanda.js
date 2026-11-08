@@ -29,7 +29,7 @@ function mostrarPedido(pedido) {
   dados.appendChild(linhaDado("Responsável Clínico", pedido.responsavelClinico || "—"));
   dados.appendChild(linhaDado("Filamento", pedido.material));
   dados.appendChild(linhaDado("Infill mínimo", pedido.infillMinimo + "%"));
-  dados.appendChild(linhaDado("Arquivo de Fatiamento", linkArquivo(pedido.arquivoUrl)));
+  dados.appendChild(linhaDado("Arquivo da prótese", linkArquivo(pedido)));
 }
 
 function mostrarProximaEtapa(pedido) {
