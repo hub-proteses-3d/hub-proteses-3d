@@ -1,10 +1,11 @@
 import { conectar } from "./db.js";
 import { buscarUsuarioPorEmail } from "./usuarios.js";
 import { criarPedido, buscarPedidoPorNumero } from "./pedidos.js";
+import { salvarArquivoExemplo } from "./arquivos.js";
 
 await conectar();
 
-const usuario = await buscarUsuarioPorEmail("teste@teste.com");
+const usuario = await buscarUsuarioPorEmail("aacd@exemplo.com");
 
 const numero = await criarPedido({
     codigoCaso: "A-2340",
@@ -13,7 +14,8 @@ const numero = await criarPedido({
     material: "PLA Biocompatível",
     infillMinimo: 35,
     cidade: "São Caetano do Sul",
-    arquivoUrl: "https://servidor.exemplo.br/arquivos/protese.gcode",
+    arquivoId: String(await salvarArquivoExemplo("teste.stl")),
+    dataLimite: "2027-06-30",
     responsavelClinico: "Dra. Fernanda Lima",
 }, usuario._id);
 console.log("Pedido criado com o número:", numero);
@@ -29,7 +31,6 @@ try {
         material: "PLA",
         infillMinimo: 35,
         cidade: "santo andre",
-        arquivoUrl: "https://servidor.exemplo.br/a.gcode",
     }, usuario._id);
 } catch (erro) {
     console.log("Erro esperado:", erro.message);

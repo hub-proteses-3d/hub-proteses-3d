@@ -94,9 +94,9 @@
           <span class="ajuda">Obrigatório. Não pode ser alterada depois.</span>
         </div>
         <div class="field full">
-          <label for="arquivoUrl">Link do arquivo de fatiamento</label>
-          <input type="url" id="arquivoUrl" placeholder="https://servidor.exemplo.br/arquivos/protese.gcode" required>
-          <span class="ajuda">Cole o link do arquivo .gcode que já está no servidor.</span>
+          <label for="arquivo">Arquivo da prótese (.stl)</label>
+          <input type="file" id="arquivo" accept=".stl" required>
+          <span class="ajuda">Arquivo .stl de até 50 MB.</span>
         </div>
       </div>
       <p id="mensagem" class="mensagem" hidden></p>

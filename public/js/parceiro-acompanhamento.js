@@ -56,7 +56,7 @@ function mostrarPedido(pedido) {
   dados.appendChild(linhaDado("Data de Solicitação", formatarData(pedido.criadoEm)));
   dados.appendChild(linhaDado("Data Limite", pedido.dataLimite ? formatarData(pedido.dataLimite) : "—"));
   dados.appendChild(linhaDado("Responsável Clínico", pedido.responsavelClinico || "—"));
-  dados.appendChild(linhaDado("Arquivo de Fatiamento", linkArquivo(pedido.arquivoUrl)));
+  dados.appendChild(linhaDado("Arquivo da prótese", linkArquivo(pedido)));
 
   const validacao = document.getElementById("dados-validacao");
   validacao.appendChild(linhaDado("Infill mínimo", pedido.infillMinimo + "%"));

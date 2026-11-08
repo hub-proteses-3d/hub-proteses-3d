@@ -2,6 +2,7 @@ import { conectar } from "./db.js";
 import { criarUsuario, buscarUsuarioPorEmail } from "./usuarios.js";
 import { criarParceiro, adicionarImpressora, adicionarFilamento } from "./parceiros.js";
 import { criarPedido, mudarStatus } from "./pedidos.js";
+import { salvarArquivoExemplo } from "./arquivos.js";
 
 const senha = process.argv[2];
 
@@ -49,7 +50,8 @@ async function novoPedido(codigoCaso, tipoProtese, urgencia, material, cidade) {
         material: material,
         infillMinimo: 30,
         cidade: cidade,
-        arquivoUrl: "https://arquivos.exemplo.com/" + codigoCaso + ".gcode",
+        arquivoId: String(await salvarArquivoExemplo(codigoCaso + ".stl")),
+        dataLimite: "2027-06-30",
     }, aacd._id);
 }
 

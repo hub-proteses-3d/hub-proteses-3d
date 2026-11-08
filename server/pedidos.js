@@ -1,6 +1,7 @@
 import { getDb } from "./db.js";
 import { CIDADES, MATERIAIS } from "./listas.js";
 import { buscarParceiroPorId } from "./parceiros.js";
+import { buscarArquivo } from "./arquivos.js";
 
 
 const URGENCIAS = ["baixa", "media", "alta"];
@@ -40,8 +41,9 @@ export async function criarPedido(dados, usuarioId) {
     if (!CIDADES.includes(dados.cidade)) {
         throw new Error("Cidade inválida");
     }
-    if (!textoValido(dados.arquivoUrl) || !dados.arquivoUrl.startsWith("http")) {
-        throw new Error("Link do arquivo inválido");
+    const arquivo = await buscarArquivo(dados.arquivoId);
+    if (arquivo === null) {
+        throw new Error("Arquivo .stl não encontrado. Envie o arquivo novamente");
     }
     if (typeof dados.dataLimite !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dados.dataLimite)) {
         throw new Error("Data limite inválida");
@@ -61,7 +63,8 @@ export async function criarPedido(dados, usuarioId) {
         material: dados.material,
         infillMinimo: dados.infillMinimo,
         cidade: dados.cidade,
-        arquivoUrl: dados.arquivoUrl.trim(),
+        arquivoId: arquivo._id,
+        arquivoNome: arquivo.filename,
         status: "Aberto",
         criadoPor: usuarioId,
         criadoEm: agora,

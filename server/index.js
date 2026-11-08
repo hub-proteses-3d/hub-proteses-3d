@@ -9,6 +9,7 @@ import {
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
 } from "./parceiros.js";
 import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus, sugerirParceiros } from "./pedidos.js";
+import { salvarArquivo, enviarArquivo } from "./arquivos.js";
 
 
 const OITO_HORAS = 8 * 60 * 60;
@@ -198,6 +199,24 @@ async function rotas(req, res) {
             return;
         }
         responderJson(res, 200, pedido);
+        return;
+    }
+    if (metodo === "POST" && caminho === "/api/arquivos") {
+        if (usuario.tipo !== "aacd" || usuario.nivel < 2) {
+            semPermissao(res);
+            return;
+        }
+        const arquivoId = await salvarArquivo(req, url.searchParams.get("nome"), usuario._id);
+        responderJson(res, 201, { arquivoId: arquivoId });
+        return;
+    }
+    if (metodo === "GET" && caminho === "/api/pedido/arquivo") {
+        const pedido = await buscarPedidoPorNumero(url.searchParams.get("numero"));
+        if (pedido === null || !pedido.arquivoId || (usuario.tipo === "parceiro" && String(pedido.parceiroId) !== String(usuario.parceiroId))) {
+            responderJson(res, 404, { erro: "Arquivo não encontrado" });
+            return;
+        }
+        await enviarArquivo(res, pedido.arquivoId, pedido.numero);
         return;
     }
     if (metodo === "POST" && caminho === "/api/pedido/status") {

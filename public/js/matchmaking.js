@@ -40,10 +40,15 @@ function mostrarPedido(pedido) {
   }
   adicionarDado("Data Limite", dataLimite);
 
-  const arquivo = adicionarDado("Arquivo de Fatiamento", "");
+  const arquivo = adicionarDado("Arquivo da prótese", "");
   const link = document.createElement("a");
-  link.href = pedido.arquivoUrl;
-  link.textContent = pedido.arquivoUrl.split("/").pop();
+  if (pedido.arquivoId) {
+    link.href = "/api/pedido/arquivo?numero=" + pedido.numero;
+    link.textContent = pedido.arquivoNome;
+  } else {
+    link.href = pedido.arquivoUrl;
+    link.textContent = pedido.arquivoUrl.split("/").pop();
+  }
   arquivo.appendChild(link);
 }
 

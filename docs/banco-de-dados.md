@@ -1,6 +1,6 @@
 # Banco de dados
 
-O projeto usa o MongoDB Atlas. O banco se chama `hub_proteses_3d` e tem três coleções.
+O projeto usa o MongoDB Atlas. O banco se chama `hub_proteses_3d` e tem três coleções principais.
 
 ## usuarios
 
@@ -42,7 +42,9 @@ Os pedidos de próteses criados pela AACD.
 - `cidade`
 - `responsavelClinico`
 - `observacoes`: opcional
-- `arquivoUrl`: link do arquivo de fatiamento
+- `arquivoId`: id do arquivo .stl da prótese, guardado no GridFS
+- `arquivoNome`: nome original do arquivo .stl
+- `dataLimite`: data limite de entrega, definida na criação e que não pode ser alterada
 - `status`
 - `motivoReprovacao`: preenchido quando o pedido é reprovado
 - `criadoPor`: usuário que criou o pedido
@@ -51,6 +53,10 @@ Os pedidos de próteses criados pela AACD.
 - `historico`: lista das mudanças de status, com `status`, `data` e `usuarioId`
 
 Para gerar o número do pedido em sequência, existe também a coleção `contadores`, que guarda o último número usado.
+
+## Arquivos .stl
+
+Os arquivos das próteses ficam no próprio MongoDB, usando o GridFS, que divide arquivos grandes em pedaços. Ele usa duas coleções: `arquivos.files` (nome, tamanho e data do envio) e `arquivos.chunks` (o conteúdo). O limite é 50 MB por arquivo. Pedidos antigos, criados antes dessa mudança, ainda têm o campo `arquivoUrl` com um link.
 
 ## Status do pedido
 
@@ -65,3 +71,4 @@ Aberto → Atribuído → Em impressão → Enviado → Em validação → Aprov
 - O histórico fica dentro do pedido pelo mesmo motivo.
 - O parceiro fica separado do usuário porque várias pessoas do mesmo parceiro têm login.
 - O pedido fica separado do parceiro porque um parceiro pode ter muitos pedidos.
+- O arquivo .stl fica no GridFS e não dentro do pedido porque um documento do MongoDB tem limite de 16 MB.

@@ -2,6 +2,7 @@ import { conectar } from "./db.js";
 import { buscarUsuarioPorEmail } from "./usuarios.js";
 import { criarParceiro, adicionarFilamento } from "./parceiros.js";
 import { criarPedido, sugerirParceiros } from "./pedidos.js";
+import { salvarArquivoExemplo } from "./arquivos.js";
 
 await conectar();
 
@@ -21,7 +22,7 @@ await novoParceiro("Teste Sugestao B", "Diadema", "PLA", true);
 await novoParceiro("Teste Sugestao C", "Santo André", "PLA", true);
 await novoParceiro("Teste Sugestao D", "Santo André", "PLA", false);
 
-const aacd = await buscarUsuarioPorEmail("teste@teste.com");
+const aacd = await buscarUsuarioPorEmail("aacd@exemplo.com");
 const numero = await criarPedido({
     codigoCaso: "A-4000",
     tipoProtese: "Mão infantil",
@@ -29,7 +30,8 @@ const numero = await criarPedido({
     material: "PLA",
     infillMinimo: 30,
     cidade: "Santo André",
-    arquivoUrl: "https://servidor.exemplo.br/arquivos/mao.gcode",
+    arquivoId: String(await salvarArquivoExemplo("teste.stl")),
+    dataLimite: "2027-06-30",
 }, aacd._id);
 console.log("Pedido", numero, "- PLA em Santo André");
 

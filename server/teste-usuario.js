@@ -3,13 +3,13 @@ import { criarUsuario, buscarUsuarioPorEmail } from "./usuarios.js";
 
 await conectar();
 
-const usuario = await buscarUsuarioPorEmail("teste@teste.com");
+const usuario = await buscarUsuarioPorEmail("fablab@exemplo.com");
 console.log("Encontrado:", usuario.nome, usuario.tipo, usuario.nivel);
 
 try {
     await criarUsuario({
         nome: "Outro",
-        email: "teste@teste.com",
+        email: "fablab@exemplo.com",
         senha: "abc",
         tipo: "aacd",
         nivel: 1,
