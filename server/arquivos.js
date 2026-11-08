@@ -1,6 +1,7 @@
 import { GridFSBucket, ObjectId } from "mongodb";
 import { pipeline } from "node:stream/promises";
 import { getDb } from "./db.js";
+import { Readable } from "node:stream"; 
 
 const LIMITE = 50 * 1024 * 1024;
 
@@ -34,4 +35,10 @@ export async function enviarArquivo(res, arquivoId, numero) {
         "Content-Disposition": 'attachment; filename="pedido-' + numero + '.stl"',
     });
     await pipeline(bucket().openDownloadStream(arquivoId), res);
+}
+
+export async function salvarArquivoExemplo(nome) {
+    const envio = bucket().openUploadStream(nome, {metadata: {exemplo: true} });
+    await pipeline(Readable.from(["solid exemplo\nendsolid exemplo\n"]), envio);
+    return envio.id;
 }

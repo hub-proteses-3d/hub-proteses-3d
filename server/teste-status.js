@@ -1,11 +1,12 @@
 import { conectar } from "./db.js";
 import { buscarUsuarioPorEmail } from "./usuarios.js";
 import { criarPedido, buscarPedidoPorNumero, mudarStatus } from "./pedidos.js";
+import { salvarArquivoExemplo } from "./arquivos.js";
 
 await conectar();
 
-const aacd = await buscarUsuarioPorEmail("teste@teste.com");
-const parceiro = await buscarUsuarioPorEmail("parceiro@teste.com");
+const aacd = await buscarUsuarioPorEmail("aacd@exemplo.com");
+const parceiro = await buscarUsuarioPorEmail("fablab@exemplo.com");
 
 const numero = await criarPedido({
     codigoCaso: "A-3000",
@@ -14,7 +15,8 @@ const numero = await criarPedido({
     material: "PLA",
     infillMinimo: 30,
     cidade: "Mauá",
-    arquivoUrl: "https://servidor.exemplo.br/arquivos/ortese.gcode",
+    arquivoId: String(await salvarArquivoExemplo("teste.stl")),
+    dataLimite: "2027-06-30",
 }, aacd._id);
 console.log("Pedido criado:", numero);
 
