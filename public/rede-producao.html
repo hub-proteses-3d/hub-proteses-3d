@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rede de Produção - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/rede-producao.css">
+</head>
+<body>
+  <header class="topbar">
+    <a id="marca" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav id="menu" class="nav"></nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name"></span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Rede de Produção</h1>
+        <p class="page-subtitle">FabLabs, universidades e parceiros ativos na rede do Grande ABC</p>
+      </div>
+    </div>
+    <p id="mensagem" class="mensagem" hidden></p>
+    <div id="lista-unidades" class="units-grid"></div>
+  </main>
+  <script src="js/rede-producao.js"></script>
+  <script src="js/sessao.js"></script>
+</body>
+</html>
