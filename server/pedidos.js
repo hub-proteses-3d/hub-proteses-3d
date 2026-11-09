@@ -1,14 +1,9 @@
 import { getDb } from "./db.js";
-import { CIDADES, MATERIAIS } from "./listas.js";
+import { erroDoPedido, textoValido } from "./validacoes.js";
 import { buscarParceiroPorId } from "./parceiros.js";
 import { buscarArquivo } from "./arquivos.js";
 
 
-const URGENCIAS = ["baixa", "media", "alta"];
-
-function textoValido(valor) {
-    return typeof valor === "string" && valor.trim() !== "";
-}
 async function proximoNumero() {
     const contador = await
         getDb().collection("contadores").findOneAndUpdate(
@@ -20,40 +15,15 @@ async function proximoNumero() {
 }
 
 export async function criarPedido(dados, usuarioId) {
-    if (!textoValido(dados.codigoCaso)) {
-        throw new Error("Código do caso é obrigatório");
-
-    }
-    if (!textoValido(dados.tipoProtese)) {
-        throw new Error("Tipo de protese é obrigatório");
-
-    }
-    if (!URGENCIAS.includes(dados.urgencia)) {
-        throw new Error("Urgência inválida");
-
-    }
-    if (!MATERIAIS.includes(dados.material)) {
-        throw new Error("Material inválido");
-    }
-    if (!Number.isInteger(dados.infillMinimo) || dados.infillMinimo < 0 || dados.infillMinimo > 100) {
-        throw new Error("Infill mínimo deve ser um número de 0 a 100");
-    }
-    if (!CIDADES.includes(dados.cidade)) {
-        throw new Error("Cidade inválida");
+    const erro = erroDoPedido(dados);
+    if (erro !== null) {
+        throw new Error(erro);
     }
     const arquivo = await buscarArquivo(dados.arquivoId);
     if (arquivo === null) {
         throw new Error("Arquivo .stl não encontrado. Envie o arquivo novamente");
     }
-    if (typeof dados.dataLimite !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dados.dataLimite)) {
-        throw new Error("Data limite inválida");
-    }
-    const dataLimite = new Date(dados.dataLimite + "T00:00:00");
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    if (isNaN(dataLimite.getTime()) || dataLimite <= hoje) {
-        throw new Error("A data limite deve ser depois de hoje");
-    }
+    
     const agora = new Date();
     const pedido = {
         numero: await proximoNumero(),
@@ -68,7 +38,7 @@ export async function criarPedido(dados, usuarioId) {
         status: "Aberto",
         criadoPor: usuarioId,
         criadoEm: agora,
-        dataLimite: dataLimite,
+        dataLimite: new Date(dados.dataLimite + "T00:00:00"),
         historico: [{ status: "Aberto", data: agora, usuarioId: usuarioId }],
     };
 
