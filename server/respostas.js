@@ -20,6 +20,9 @@ export async function lerCorpo(req) {
     let texto = "";
     for await (const pedaco of req) {
         texto += pedaco;
+        if (texto.length > 1024 * 1024) {
+            throw new Error("Os dados devem ter até 1 MB");
+        }
     }
     if (texto === ""){
         return {};

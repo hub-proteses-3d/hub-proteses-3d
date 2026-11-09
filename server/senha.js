@@ -10,6 +10,6 @@ export function conferirSenha(senha, senhaGuardada) {
     const partes = senhaGuardada.split(':');
     const sal = partes[0];
     const hashGuardado = partes[1];
-    const hash = crypto.scryptSync(senha, sal, 64).toString('hex');
-    return hash === hashGuardado;
+    const hash = crypto.scryptSync(senha, sal, 64);
+    return crypto.timingSafeEqual(hash, Buffer.from(hashGuardado, 'hex'));
 }

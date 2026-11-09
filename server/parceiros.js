@@ -51,6 +51,21 @@ export async function buscarParceiroPorId(id) {
             ObjectId(id)
     });
 }
+export async function alterarHomologado(id, homologado) {
+    if (!ObjectId.isValid(id)) {
+        throw new Error("Parceiro inválido");
+    }
+    if (typeof homologado !== "boolean") {
+        throw new Error("Informe homologado como true ou false");
+    }
+    const resultado = await getDb().collection("parceiros").updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { homologado: homologado } }
+    );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Parceiro não encontrado");
+    }
+}
 export async function adicionarImpressora(parceiroId, dados) {
     if (!ObjectId.isValid(parceiroId)){
         throw new Error("Parceiro inválido");
