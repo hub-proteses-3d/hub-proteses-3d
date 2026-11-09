@@ -4,7 +4,7 @@ import { conectar } from "./db.js";
 import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
 import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
 import { conferirSenha } from "./senha.js";
-import { criarUsuario, buscarUsuarioPorEmail, alterarSenha, listarUsuarios, alterarAtivo } from "./usuarios.js";
+import { criarUsuario, buscarUsuarioPorEmail, alterarSenha, listarUsuarios, alterarAtivo, editarUsuario } from "./usuarios.js";
 import {
     criarParceiro, listarParceiros, buscarParceiroPorId, alterarHomologado,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
@@ -102,6 +102,16 @@ async function rotas(req, res) {
             tipo: url.searchParams.get("tipo"),
             ativo: url.searchParams.get("ativo"),
         }));
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/usuario") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        await editarUsuario(url.searchParams.get("id"), await lerCorpo(req));
+        responderJson(res, 200, { mensagem: "Usuário atualizado" });
         return;
     }
 
