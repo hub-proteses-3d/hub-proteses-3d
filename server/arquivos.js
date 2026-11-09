@@ -30,11 +30,19 @@ export async function buscarArquivo(id) {
 }
 
 export async function enviarArquivo(res, arquivoId, numero) {
+    const arquivo = await buscarArquivo(arquivoId);
+    if (arquivo === null) {
+        throw new Error("Arquivo não encontrado");
+    }
     res.writeHead(200, {
         "Content-Type": "application/octet-stream",
         "Content-Disposition": 'attachment; filename="pedido-' + numero + '.stl"',
     });
-    await pipeline(bucket().openDownloadStream(arquivoId), res);
+    try {
+        await pipeline(bucket().openDownloadStream(arquivo._id), res);
+    } catch {
+        res.destroy();
+    }
 }
 
 export async function salvarArquivoExemplo(nome) {

@@ -7,6 +7,7 @@ export async function conectar() {
     await db.collection("usuarios").createIndex({ email: 1 }, { unique: true });
     await db.collection("pedidos").createIndex({ numero: 1 }, { unique: true });
     await db.collection("sessoes").createIndex({criadoEm: 1}, {expireAfterSeconds: 28800});
+    await db.collection("sessoes").createIndex({ token: 1 }, { unique: true });    
     console.log("Conectado ao MongoDB");
 }
 
