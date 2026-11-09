@@ -1,7 +1,7 @@
 const lista = document.getElementById("lista-parceiros");
 
 const TIPOS_UNIDADE = {
-  fablab: "Universidade / FabLab",
+  fablab: "FabLab ou universidade",
   voluntario: "Voluntário",
   empresa: "Empresa",
 };
@@ -18,6 +18,31 @@ function mostrarMensagem(texto) {
   celula.colSpan = 6;
   linha.appendChild(celula);
   lista.appendChild(linha);
+}
+
+async function mudarHomologacao(parceiro, homologado) {
+  if (!homologado && !confirm("Suspender o parceiro " + parceiro.nome + "?")) {
+    return;
+  }
+  try {
+    const resposta = await fetch("/api/parceiro/homologado?id=" + parceiro._id, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ homologado: homologado }),
+    });
+    if (resposta.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    const resultado = await resposta.json();
+    if (!resposta.ok) {
+      alert(resultado.erro);
+      return;
+    }
+    carregarParceiros();
+  } catch {
+    alert("Não foi possível conectar ao servidor.");
+  }
 }
 
 function mostrarParceiros(parceiros) {
@@ -50,11 +75,18 @@ function mostrarParceiros(parceiros) {
     linha.appendChild(celulaHomologacao);
 
     const celulaAcoes = document.createElement("td");
-    const editar = document.createElement("a");
-    editar.href = "admin-editar-parceiro.html?id=" + parceiro._id;
-    editar.className = "btn-link";
-    editar.textContent = "Editar";
-    celulaAcoes.appendChild(editar);
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "btn-link";
+    if (parceiro.homologado) {
+      botao.textContent = "Suspender";
+    } else {
+      botao.textContent = "Homologar";
+    }
+    botao.addEventListener("click", () => {
+      mudarHomologacao(parceiro, !parceiro.homologado);
+    });
+    celulaAcoes.appendChild(botao);
     linha.appendChild(celulaAcoes);
 
     lista.appendChild(linha);
@@ -66,6 +98,7 @@ function mostrarParceiros(parceiros) {
 }
 
 async function carregarParceiros() {
+  lista.textContent = "";
   try {
     const resposta = await fetch("/api/parceiros");
     if (resposta.status === 401) {
