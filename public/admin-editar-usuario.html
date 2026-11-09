@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar usuário - Hub AACD</title>
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/admin-formulario.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="admin-usuarios.html" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Hub AACD</span>
+    </a>
+    <nav class="nav">
+      <a href="admin-usuarios.html" class="active">Usuários</a>
+      <a href="admin-parceiros.html">Parceiros</a>
+    </nav>
+    <div class="user-chip">
+      <span class="avatar"></span>
+      <span class="user-name">Mauá · Administrador</span>
+      <a href="alterar-senha.html" class="logout-link">Alterar senha</a>
+      <button type="button" id="sair" class="logout-link">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="form-pagina">
+      <a href="admin-usuarios.html" class="back-link">← Voltar para usuários</a>
+      <h1 class="page-title">Editar usuário</h1>
+
+      <form id="form-usuario" class="card card-pad form-card">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" required>
+          </div>
+          <div class="field full">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" disabled>
+            <p class="dica">O e-mail não pode ser alterado.</p>
+          </div>
+          <div class="field">
+            <label for="tipo">Tipo</label>
+            <select id="tipo">
+              <option value="aacd">AACD</option>
+              <option value="parceiro">Parceiro</option>
+              <option value="admin">Admin</option>
+            </select>
+            <p class="dica">AACD, Parceiro ou Admin</p>
+          </div>
+          <div class="field">
+            <label for="nivel">Nível</label>
+            <select id="nivel">
+              <option value="1">Nível 1</option>
+              <option value="2">Nível 2</option>
+              <option value="3">Nível 3</option>
+            </select>
+            <p class="dica">Nível 1: só visualiza. Nível 2: visualiza e altera. Nível 3: administrador. Quando o tipo for Admin, o nível fica fixo em 3.</p>
+          </div>
+          <div id="campo-parceiro" class="field full">
+            <label for="parceiroId">Parceiro</label>
+            <select id="parceiroId"></select>
+          </div>
+        </div>
+
+        <p id="mensagem" class="mensagem-erro" hidden></p>
+
+        <div class="form-botoes">
+          <a href="admin-usuarios.html" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Salvar alterações</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script src="js/sessao.js"></script>
+  <script src="js/admin-editar-usuario.js"></script>
+</body>
+</html>
