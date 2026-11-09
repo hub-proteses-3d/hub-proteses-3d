@@ -34,3 +34,7 @@
   gap: 10px;
   margin-top: 20px;
 }
+
+.form-grid .field {
+  min-width: 0;
+}
