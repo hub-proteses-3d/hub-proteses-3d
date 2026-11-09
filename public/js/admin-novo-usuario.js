@@ -1,6 +1,7 @@
 const form = document.getElementById("form-usuario");
 const tipo = document.getElementById("tipo");
 const nivel = document.getElementById("nivel");
+const opcaoNivel3 = document.getElementById("opcao-nivel-3");
 const campoParceiro = document.getElementById("campo-parceiro");
 const selectParceiro = document.getElementById("parceiroId");
 const mensagem = document.getElementById("mensagem");
@@ -14,10 +15,15 @@ function atualizarCampos() {
   campoParceiro.hidden = tipo.value !== "parceiro";
 
   if (tipo.value === "admin") {
+    opcaoNivel3.hidden = false;
     nivel.value = "3";
     nivel.disabled = true;
   } else {
+    opcaoNivel3.hidden = true;
     nivel.disabled = false;
+    if (nivel.value === "3") {
+      nivel.value = "1";
+    }
   }
 }
 
