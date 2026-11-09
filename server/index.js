@@ -1,15 +1,16 @@
 import http from "node:http";
+import { ObjectId } from "mongodb";
 import { conectar } from "./db.js";
 import { responderJson, lerCorpo, servirArquivo } from "./respostas.js";
 import { criarSessao, buscarUsuarioDaSessao, apagarSessao } from "./sessoes.js";
 import { conferirSenha } from "./senha.js";
 import { criarUsuario, buscarUsuarioPorEmail, alterarSenha, listarUsuarios, alterarAtivo } from "./usuarios.js";
 import {
-    criarParceiro, listarParceiros, buscarParceiroPorId,
+    criarParceiro, listarParceiros, buscarParceiroPorId, alterarHomologado,
     adicionarImpressora, removerImpressora, adicionarFilamento, removerFilamento,
 } from "./parceiros.js";
 import { criarPedido, listarPedidos, buscarPedidoPorNumero, mudarStatus, sugerirParceiros } from "./pedidos.js";
-import { salvarArquivo, enviarArquivo } from "./arquivos.js";
+import { salvarArquivo, enviarArquivo, buscarArquivo } from "./arquivos.js";
 
 
 const OITO_HORAS = 8 * 60 * 60;
@@ -120,6 +121,32 @@ async function rotas(req, res) {
         return;
     }
 
+    if (metodo === "POST" && caminho === "/api/usuario/senha") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const id = url.searchParams.get("id");
+        if (!ObjectId.isValid(id)) {
+            throw new Error("Usuário inválido");
+        }
+        const dados = await lerCorpo(req);
+        await alterarSenha(new ObjectId(id), dados.novaSenha);
+        responderJson(res, 200, { mensagem: "Senha alterada" });
+        return;
+    }
+
+    if (metodo === "POST" && caminho === "/api/parceiro/homologado") {
+        if (usuario.tipo !== "admin") {
+            semPermissao(res);
+            return;
+        }
+        const dados = await lerCorpo(req);
+        await alterarHomologado(url.searchParams.get("id"), dados.homologado);
+        responderJson(res, 200, { mensagem: dados.homologado ? "Parceiro homologado" : "Homologação removida" });
+        return;
+    }
+
     if (metodo === "GET" && caminho === "/api/parceiros") {
         responderJson(res, 200, await listarParceiros());
         return;
@@ -212,7 +239,7 @@ async function rotas(req, res) {
     }
     if (metodo === "GET" && caminho === "/api/pedido/arquivo") {
         const pedido = await buscarPedidoPorNumero(url.searchParams.get("numero"));
-        if (pedido === null || !pedido.arquivoId || (usuario.tipo === "parceiro" && String(pedido.parceiroId) !== String(usuario.parceiroId))) {
+        if (pedido === null || !(await buscarArquivo(pedido.arquivoId)) || (usuario.tipo === "parceiro" && String(pedido.parceiroId) !== String(usuario.parceiroId))) {
             responderJson(res, 404, { erro: "Arquivo não encontrado" });
             return;
         }
@@ -241,7 +268,11 @@ const servidor = http.createServer(async (req, res) => {
     try {
         await rotas(req, res);
     } catch (erro) {
-        if (erro.name === "SyntaxError") {
+        if (res.headersSent) {
+            res.destroy();
+        } else if (erro.name === "URIError") {
+            responderJson(res, 404, { erro: "Página não encontrada" });
+        } else if (erro.name === "SyntaxError") {
             responderJson(res, 400, { erro: "JSON inválido" });
         } else if (erro.name === "Error") {
             responderJson(res, 400, { erro: erro.message });

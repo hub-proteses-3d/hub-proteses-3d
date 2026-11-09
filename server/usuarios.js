@@ -13,13 +13,13 @@ export async function criarUsuario(dados) {
     if (typeof dados.email !== 'string' || dados.email === "") {
         throw new Error("Email é obrigatório");
     }
-    if (typeof dados.senha !== 'string' || dados.senha === "") {
-        throw new Error("Senha é obrigatória");
+    if (typeof dados.senha !== 'string' || dados.senha.length < 6) {
+        throw new Error("A senha precisa ter pelo menos 6 caracteres");
     }
     if (!TIPOS.includes(dados.tipo)) {
         throw new Error("Tipo de usuário inválido");
     }
-    if (!NIVEIS.includes(dados.nivel)) {
+    if (!NIVEIS.includes(dados.nivel) || (dados.tipo === "admin") !== (dados.nivel === 3)) {
         throw new Error("Nível inválido");
     }
 
@@ -60,10 +60,13 @@ export async function alterarSenha(usuarioId, novaSenha) {
     if (typeof novaSenha !== "string" || novaSenha.length < 6) {
         throw new Error("A nova senha precisa ter pelo menos 6 caracteres");
     }
-    await getDb().collection("usuarios").updateOne(
+    const resultado = await getDb().collection("usuarios").updateOne(
         { _id: usuarioId },
         { $set: { senha: gerarHash(novaSenha) } }
     );
+    if (resultado.matchedCount === 0) {
+        throw new Error("Usuário não encontrado");
+    }
 }
 
 export async function listarUsuarios(filtros) {
