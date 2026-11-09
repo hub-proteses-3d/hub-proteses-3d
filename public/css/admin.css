@@ -1,0 +1,7 @@
+.texto-cinza {
+  color: var(--text-gray);
+}
+
+.link-acao {
+  margin-left: 14px;
+}
