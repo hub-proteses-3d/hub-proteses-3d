@@ -121,7 +121,6 @@ export async function adicionarFilamento(parceiroId, dados) {
     if (!MATERIAIS.includes(dados.material)) {
         throw new Error("Material inválido");
     }
-
     const filamento = {
         _id: new ObjectId(),
         material: dados.material,
@@ -129,14 +128,15 @@ export async function adicionarFilamento(parceiroId, dados) {
     };
 
     const resultado = await getDb().collection("parceiros").updateOne(
-        { _id: new ObjectId(parceiroId) },
+        { _id: new ObjectId(parceiroId), "filamentos.material": { $ne: dados.material } },
         { $push: { filamentos: filamento } }
     );
     if (resultado.matchedCount === 0) {
-        throw new Error("Parceiro não encontrado");
+        throw new Error("Parceiro não encontrado ou material já cadastrado");
     }
     return filamento._id;
 }
+
 
 export async function removerFilamento(parceiroId, filamentoId) {
     if (!ObjectId.isValid(parceiroId) || !ObjectId.isValid(filamentoId)) {
