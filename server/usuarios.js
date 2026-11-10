@@ -2,9 +2,16 @@ import { ObjectId } from "mongodb";
 import { getDb } from './db.js';
 import { gerarHash } from './senha.js';
 import { buscarParceiroPorId } from "./parceiros.js";
+import { textoValido } from "./validacoes.js";
 
 const TIPOS = ["admin", "aacd", "parceiro"];
 const NIVEIS = [1, 2, 3];
+
+function validarNivel(tipo, nivel) {
+    if (!NIVEIS.includes(nivel) || (tipo === "admin") !== (nivel === 3)) {
+        throw new Error("Nível inválido");
+    }
+}
 
 export async function criarUsuario(dados) {
     if (typeof dados.nome !== 'string' || dados.nome === "") {
@@ -19,9 +26,7 @@ export async function criarUsuario(dados) {
     if (!TIPOS.includes(dados.tipo)) {
         throw new Error("Tipo de usuário inválido");
     }
-    if (!NIVEIS.includes(dados.nivel) || (dados.tipo === "admin") !== (dados.nivel === 3)) {
-        throw new Error("Nível inválido");
-    }
+    validarNivel(dados.tipo, dados.nivel);
 
     const usuario = {
         nome: dados.nome,
@@ -67,6 +72,29 @@ export async function alterarSenha(usuarioId, novaSenha) {
     if (resultado.matchedCount === 0) {
         throw new Error("Usuário não encontrado");
     }
+}
+
+export async function editarUsuario(id, dados) {
+    if (!ObjectId.isValid(id)) {
+        throw new Error("Usuário inválido");
+    }
+    const atual = await getDb().collection("usuarios").findOne({ _id: new ObjectId(id) });
+    if (atual === null) {
+        throw new Error("Usuário não encontrado");
+    }
+    if (!textoValido(dados.nome)) {
+        throw new Error("Nome é obrigatório");
+    }
+    validarNivel(atual.tipo, dados.nivel);
+    const alteracoes = { nome: dados.nome, nivel: dados.nivel };
+    if (atual.tipo === "parceiro") {
+        const parceiro = await buscarParceiroPorId(dados.parceiroId);
+        if (parceiro === null) {
+            throw new Error("Parceiro não encontrado");
+        }
+        alteracoes.parceiroId = parceiro._id;
+    }
+    await getDb().collection("usuarios").updateOne({ _id: atual._id }, { $set: alteracoes });
 }
 
 export async function listarUsuarios(filtros) {
