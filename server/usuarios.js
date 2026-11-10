@@ -14,10 +14,10 @@ function validarNivel(tipo, nivel) {
 }
 
 export async function criarUsuario(dados) {
-    if (typeof dados.nome !== 'string' || dados.nome === "") {
+    if (typeof dados.nome !== 'string' || dados.nome.trim() === "") {
         throw new Error("Nome é obrigatório");
     }
-    if (typeof dados.email !== 'string' || dados.email === "") {
+    if (typeof dados.email !== 'string' || dados.email.trim() === "") {
         throw new Error("Email é obrigatório");
     }
     if (typeof dados.senha !== 'string' || dados.senha.length < 6) {
@@ -29,8 +29,8 @@ export async function criarUsuario(dados) {
     validarNivel(dados.tipo, dados.nivel);
 
     const usuario = {
-        nome: dados.nome,
-        email: dados.email.toLowerCase(),
+        nome: dados.nome.trim(),
+        email: dados.email.trim().toLowerCase(),
         senha: gerarHash(dados.senha),
         tipo: dados.tipo,
         nivel: dados.nivel,
@@ -59,7 +59,7 @@ export async function buscarUsuarioPorEmail(email) {
     if (typeof email !== "string") {
         return null;
     }
-    return getDb().collection("usuarios").findOne({ email: email.toLowerCase() });
+    return getDb().collection("usuarios").findOne({ email: email.trim().toLowerCase() });
 }
 export async function alterarSenha(usuarioId, novaSenha) {
     if (typeof novaSenha !== "string" || novaSenha.length < 6) {
