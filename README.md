@@ -14,7 +14,7 @@ Hoje esse contato é feito de forma manual. Com a plataforma, a AACD cadastra o 
 - Cadastro e login de usuários (AACD, parceiros e administrador)
 - Cadastro de parceiros e das suas impressoras e filamentos
 - Criação de pedidos de próteses pela AACD
-- Sugestão de parceiros para cada pedido, levando em conta o tipo de impressora, o material, a urgência e a distância
+- Sugestão de parceiros para cada pedido: aparecem os parceiros homologados que têm o material pedido (para PLA Biocompatível, só os com biocompatibilidade validada), primeiro os da mesma cidade.
 - Acompanhamento do status do pedido até a entrega
 
 Os dados dos pacientes não são guardados no sistema, cada pedido usa só um código de identificação.
