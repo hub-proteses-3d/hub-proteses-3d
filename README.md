@@ -1,5 +1,5 @@
 
-# Hub de Proteses 3D
+# Hub de Próteses 3D
 
 Projeto Integrador Interdisciplinar do 2º semestre de Ciencia da Computacao do Instituto Maua de Tecnologia, em parceria com a AACD.
 
