@@ -1,0 +1,17 @@
+.unit-card {
+  cursor: default;
+}
+
+.unit-card:hover {
+  border-color: var(--border);
+}
+
+.mensagem {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--teal-dark);
+}
+
+.mensagem-erro {
+  color: var(--danger);
+}

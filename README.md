@@ -1,7 +1,7 @@
 
 # Hub de Próteses 3D
 
-Projeto Integrador Interdisciplinar do 2º semestre de Ciência da Computação do Instituto Mauá de Tecnologia, em parceria com a AACD.
+Projeto Integrador Interdisciplinar do 2º semestre de Ciencia da Computacao do Instituto Maua de Tecnologia, em parceria com a AACD.
 
 ## Sobre o projeto
 
@@ -14,7 +14,7 @@ Hoje esse contato é feito de forma manual. Com a plataforma, a AACD cadastra o 
 - Cadastro e login de usuários (AACD, parceiros e administrador)
 - Cadastro de parceiros e das suas impressoras e filamentos
 - Criação de pedidos de próteses pela AACD
-- Sugestão de parceiros para cada pedido, levando em conta o tipo de impressora, o material, a urgência e a distância
+- Sugestão de parceiros para cada pedido: aparecem os parceiros homologados que têm o material pedido (para PLA Biocompatível, só os com biocompatibilidade validada), primeiro os da mesma cidade.
 - Acompanhamento do status do pedido até a entrega
 
 Os dados dos pacientes não são guardados no sistema, cada pedido usa só um código de identificação.
@@ -43,11 +43,11 @@ npm start
 
 ## Organização
 
-- `server/`: back-end (rotas, modelos e conexão com o banco)
+- `server/`: back-end (rotas e conexão com o banco)
 - `public/`: páginas do site
 - `docs/`: documentação do projeto
 
-Cada funcionalidade é feita em uma branch separada e depois entra na `main` por pull request.
+Cada funcionalidade é feita em uma branch separada e depois entra na `develop` por pull request.
 
 ## Integrantes
 
