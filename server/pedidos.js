@@ -155,7 +155,7 @@ export async function sugerirParceiros(numero) {
         filtro.biocompatibilidadeValidada = true;
     }
     const parceiros = await getDb().collection("parceiros").find(
-         filtro,
+        filtro,
         { projection: { nome: 1, cidade: 1, capacidadeMensal: 1 } }
     ).sort({ nome: 1 }).toArray();
 

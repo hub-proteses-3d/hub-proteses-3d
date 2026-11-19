@@ -56,7 +56,7 @@ Para gerar o número do pedido em sequência, existe também a coleção `contad
 
 ## Arquivos .stl
 
-Os arquivos das próteses ficam no próprio MongoDB, usando o GridFS, que divide arquivos grandes em pedaços. Ele usa duas coleções: `arquivos.files` (nome, tamanho e data do envio) e `arquivos.chunks` (o conteúdo). O limite é 50 MB por arquivo. Pedidos antigos, criados antes dessa mudança, ainda têm o campo `arquivoUrl` com um link.
+Os arquivos das próteses ficam no próprio MongoDB, usando o GridFS, que divide arquivos grandes em pedaços. Ele usa duas coleções: `arquivos.files` (nome, tamanho e data do envio) e `arquivos.chunks` (o conteúdo). O limite é 50 MB por arquivo. Pedidos antigos, criados antes dessa mudança, ainda têm o campo `arquivoUrl` com um link. O arquivo é enviado antes de o pedido ser criado. Se a criação do pedido falhar, o arquivo fica guardado sem pedido. Uma melhoria futura é apagar esses arquivos que não estão em nenhum pedido.
 
 ## Status do pedido
 
