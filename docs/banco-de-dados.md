@@ -23,7 +23,7 @@ As unidades que imprimem: FabLabs, voluntários e empresas.
 - `cidade`
 - `cnpj`: opcional
 - `capacidadeMensal`: peças por mês
-- `biocompatibilidadeValidada`: sim ou não
+- `biocompatibilidadeValidada`: sim ou não, precisa ser sim para o parceiro aparecer na sugestão e receber pedidos de PLA Biocompatível
 - `homologado`: sim ou não
 - `impressoras`: lista com `modelo`, `tecnologia` e `quantidade`
 - `filamentos`: lista com `material` e `biocompativel`

@@ -115,6 +115,10 @@ export async function mudarStatus(numero, novoStatus, usuario, dados) {
         if (parceiro === null || !parceiro.homologado) {
             throw new Error("Parceiro inválido ou não homologado");
         }
+        if (pedido.material === "PLA Biocompatível" &&
+            !parceiro.biocompatibilidadeValidada) {
+            throw new Error("Este parceiro não tem biocompatibilidade validada");
+        }
         mudanca.parceiroId = parceiro._id;
     }
     if (novoStatus === "Reprovado") {
@@ -145,8 +149,13 @@ export async function sugerirParceiros(numero) {
     if (pedido === null) {
         throw new Error("Pedido não encontrado");
     }
+    const filtro = { homologado: true, 
+        "filamentos.material": pedido.material };
+    if (pedido.material === "PLA Biocompatível") {
+        filtro.biocompatibilidadeValidada = true;
+    }
     const parceiros = await getDb().collection("parceiros").find(
-        { homologado: true, "filamentos.material": pedido.material },
+         filtro,
         { projection: { nome: 1, cidade: 1, capacidadeMensal: 1 } }
     ).sort({ nome: 1 }).toArray();
 
